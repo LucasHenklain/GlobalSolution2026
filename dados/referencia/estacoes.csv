@@ -1,0 +1,5 @@
+estacao_id,nome,bairro,zona,inmet,altura_sensor_cm,cota_atencao_cm,cota_alerta_cm,cota_transbordo_cm,moradores_area,lat,lon
+EST-ARI-01,Córrego Aricanduva,Vila Aricanduva,Leste,A701,400,150,220,280,1840,-23.5560,-46.5140
+EST-PIR-01,Córrego Pirajuçara,Campo Limpo,Sul,A771,400,140,200,260,2310,-23.6330,-46.7630
+EST-PAN-01,Jardim Pantanal (várzea do Tietê),São Miguel Paulista,Leste,A701,400,180,250,320,3150,-23.4850,-46.4170
+EST-IPI-01,Córrego Ipiranga,Ipiranga,Sul,A771,400,120,180,240,1260,-23.6090,-46.6190

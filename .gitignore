@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+# segredos
+.env
+*.key
+*.pem
+# estado local (gerado ao rodar)
+var/
+dados/lake/
+ia/modelos/*.joblib
+# trabalho temporário de vídeo/PDF
+**/_work/
+*.part
