@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone_risco, selo, barra_nivel, bloco_grafico, atualizacao %}
+{% block titulo %}Minha área{% endblock %}
+{% block conteudo %}
+<section class="painel-risco risco-{{ nivel }}" aria-labelledby="titulo-risco">
+  {{ icone_risco(nivel) }}
+  <p class="sobre">{{ estacao.nome }} · {{ estacao.bairro }}</p>
+  <h1 id="titulo-risco" class="caixa-alta">{{ RISCOS[nivel].rotulo }}</h1>
+  <p class="frase">{{ RISCOS[nivel].frase }}</p>
+  {% if situacao %}<p class="leitura">Leitura de {{ situacao.atualizado_em | data_hora }} · atualizado {{ situacao.recebido_em | ha_quanto }}</p>{% endif %}
+</section>
+{% if dado_velho %}<p class="aviso aviso-erro" role="status">Atenção: não chegam dados novos desta estação {{ situacao.recebido_em | ha_quanto }}. Ela pode estar sem conexão. Na dúvida, siga a sirene e ligue 199.</p>{% endif %}
+{{ atualizacao("/minha-area", auto_atualizar) }}
+
+<div class="colunas">
+  <div class="pilha">
+    {% if situacao %}
+    <section class="cartao risco-{{ nivel }}" aria-labelledby="titulo-previsao">
+      <h2 id="titulo-previsao">Chance de o córrego transbordar em 1 hora</h2>
+      {% if situacao.prob_transbordo_60min is not none %}
+      <p class="numero-grande">{{ situacao.prob_transbordo_60min | porcento }}</p>
+      <svg class="barra" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <rect class="barra-fundo" width="100" height="10"/><rect class="barra-valor" width="{{ (situacao.prob_transbordo_60min * 100) | round(1) }}" height="10"/>
+      </svg>
+      <p class="pequeno suave">Previsão calculada pela inteligência artificial com a chuva e o nível medidos agora.</p>
+      {% else %}
+      <p>A previsão não está disponível agora. O aviso continua valendo pela regra da estação (nível do córrego).</p>
+      {% endif %}
+    </section>
+
+    <section class="cartao risco-{{ nivel }}" aria-labelledby="titulo-porque">
+      <h2 id="titulo-porque">Por quê?</h2>
+      <ul class="lista-marcada">{% for motivo in motivos %}<li>{{ motivo }}</li>{% endfor %}</ul>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-grafico">
+      <h2 id="titulo-grafico">Nível do córrego e chuva nas últimas horas</h2>
+      {{ bloco_grafico(grafico, tabela) }}
+    </section>
+    {% else %}
+    <p class="vazio">Ainda não recebemos dados da estação da sua área. Volte em alguns minutos.</p>
+    {% endif %}
+  </div>
+
+  <div class="pilha">
+    <section class="cartao risco-{{ nivel }}" aria-labelledby="titulo-fazer">
+      <h2 id="titulo-fazer">O que fazer agora</h2>
+      <ul class="lista-marcada lista-passos">{% for passo in orientacoes %}<li>{{ passo }}</li>{% endfor %}</ul>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-ultimo">
+      <h2 id="titulo-ultimo">Último alerta</h2>
+      {% if ultimo_alerta %}
+      <p>{{ selo(ultimo_alerta.nivel_risco) }}</p>
+      <p><strong>{{ ultimo_alerta.titulo }}</strong></p>
+      <p class="pequeno suave">Enviado em {{ ultimo_alerta.emitido_em | data_hora }}</p>
+      <p class="acoes"><a class="botao botao-claro botao-menor" href="/alertas/{{ ultimo_alerta.alerta_id }}">Ler o alerta</a> <a href="/alertas">Ver todos</a></p>
+      {% else %}
+      <p class="suave">Nenhum alerta foi enviado para a sua área até agora.</p>
+      {% endif %}
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-relatar">
+      <h2 id="titulo-relatar">Viu um problema?</h2>
+      <p>Bueiro entupido, lixo no córrego, rua alagando ou sirene com defeito: avise a Defesa Civil.</p>
+      <p class="acoes"><a class="botao" href="/ocorrencias/nova">Relatar ocorrência</a></p>
+    </section>
+  </div>
+</div>
+{% endblock %}

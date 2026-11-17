@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo_erro }}{% endblock %}
+{% block conteudo %}
+<section class="cartao estreito">
+  <h1>{{ titulo_erro }}</h1>
+  {% if detalhe %}<p>{{ detalhe }}</p>
+  {% elif codigo == 404 %}<p>Não encontramos esta página. Confira o endereço ou volte para o início.</p>
+  {% else %}<p>Não foi possível concluir o pedido. Volte e tente de novo.</p>{% endif %}
+  <p class="acoes"><a class="botao" href="/">Voltar para o início</a></p>
+</section>
+{% endblock %}

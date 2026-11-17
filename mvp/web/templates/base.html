@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR"{% if classes_corpo %} class="{{ classes_corpo }}"{% endif %}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Alerta de enchentes{% endblock %} · VigIA</title>
+<meta name="description" content="VigIA: alerta comunitário de enchentes para quem mora perto de córrego em São Paulo.">
+{% if auto_atualizar %}<meta http-equiv="refresh" content="60">{% endif %}
+<link rel="stylesheet" href="/static/estilo.css?v={{ versao_estaticos() }}">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+</head>
+{% macro item(url, texto, classe="") %}<li><a href="{{ url }}"{% if classe %} class="{{ classe }}"{% endif %}{% if request.url.path == url %} aria-current="page"{% endif %}>{{ texto }}</a></li>{% endmacro %}
+<body{% if classes_corpo %} class="{{ classes_corpo }}"{% endif %}>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <div class="largura topo-linha">
+    <a class="marca" href="/" aria-label="VigIA, página inicial"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/static/icones.svg#marca"/></svg><span>Vig<b>IA</b></span></a>
+    <nav aria-label="Menu principal">
+      <ul class="menu">
+        {% if usuario and usuario.papel == "agente" %}
+          {{ item("/agente", "Painel do agente") }}{{ item("/alertas", "Alertas") }}{{ item("/estacoes", "Estações") }}{{ item("/perfil", "Perfil") }}
+        {% elif usuario %}
+          {{ item("/minha-area", "Minha área") }}{{ item("/alertas", "Alertas") }}{{ item("/ocorrencias", "Ocorrências") }}{{ item("/estacoes", "Estações") }}{{ item("/perfil", "Perfil") }}
+        {% else %}
+          {{ item("/", "Início") }}{{ item("/estacoes", "Estações") }}{{ item("/entrar", "Entrar") }}{{ item("/cadastro", "Criar conta", "menu-destaque") }}
+        {% endif %}
+        {% if usuario %}<li><form method="post" action="/sair">{% include "_csrf.html" %}<button type="submit">Sair</button></form></li>{% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>
+{% if faixa_demo %}<p class="faixa-demo" role="note">{{ faixa_demo }}</p>{% endif %}
+<main id="conteudo" class="largura">
+{% if aviso %}<p class="aviso aviso-{{ aviso.tipo }}" role="status">{{ aviso.texto }}</p>{% endif %}
+{% block conteudo %}{% endblock %}
+</main>
+<footer class="rodape">
+  <div class="largura">
+    <p><strong>Emergência: ligue 199 (Defesa Civil) ou 193 (Bombeiros).</strong></p>
+    <p>Internet fraca? Veja a situação em texto puro: <a href="/status.txt">/status.txt</a></p>
+    <p>Protótipo acadêmico (FIAP, Global Solution 2026). As estações e o nível dos córregos são simulados; a chuva do histórico é real (INMET).</p>
+  </div>
+</footer>
+</body>
+</html>

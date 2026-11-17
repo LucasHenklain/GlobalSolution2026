@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo %}
+{% block titulo %}Entrar{% endblock %}
+{% block conteudo %}
+<section class="cartao estreito">
+  <h1>Entrar</h1>
+  {% if erro %}<p class="aviso aviso-erro" role="alert">{{ erro }}</p>{% endif %}
+  <form method="post" action="/entrar">
+    {% include "_csrf.html" %}
+    {{ campo("email", "E-mail", {}, tipo="email", valor=email, obrigatorio=true, atributos={"autocomplete": "username", "maxlength": 254}) }}
+    {{ campo("senha", "Senha", {}, tipo="password", obrigatorio=true, atributos={"autocomplete": "current-password", "maxlength": 72}) }}
+    <p class="acoes"><button class="botao" type="submit">Entrar</button></p>
+  </form>
+  <p>Ainda não tem conta? <a href="/cadastro">Criar conta</a></p>
+</section>
+{% endblock %}

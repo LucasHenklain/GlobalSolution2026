@@ -29,6 +29,9 @@ def obter_logger(nome: str) -> logging.Logger:
     """Devolve um logger que escreve JSON; chamar várias vezes com o mesmo nome não duplica saída."""
     logger = logging.getLogger(nome)
     if not logger.handlers:
+        # No Windows, saída redirecionada usa cp1252 e quebra os acentos: forçamos UTF-8.
+        if hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
         saida = logging.StreamHandler(sys.stdout)
         saida.setFormatter(_FormatoJson())
         logger.addHandler(saida)

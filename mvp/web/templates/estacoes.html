@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_macros.html" import selo %}
+{% block titulo %}Estações{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <h1>Estações de monitoramento</h1>
+  <p class="suave">{{ estacoes | length }} pontos em córregos de São Paulo</p>
+</div>
+<div class="cartao rolagem">
+  <table>
+    <caption class="so-leitor">Situação atual de cada estação</caption>
+    <thead>
+      <tr>
+        <th scope="col">Estação</th><th scope="col">Risco</th><th scope="col" class="num">Nível (cm)</th>
+        <th scope="col" class="num">% da cota</th><th scope="col" class="num">Chuva 1 h (mm)</th>
+        <th scope="col" class="num">Bateria</th><th scope="col">Leitura</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for estacao in estacoes.values() %}
+      {% set s = situacoes.get(estacao.estacao_id) %}
+      <tr>
+        <th scope="row"><a href="/estacoes/{{ estacao.estacao_id }}">{{ estacao.nome }}</a><br><span class="pequeno suave">{{ estacao.bairro }} · Zona {{ estacao.zona }} · {{ estacao.estacao_id }}</span></th>
+        <td>{{ selo(s.nivel_risco if s else "sem_dados") }}</td>
+        {% if s %}
+        <td class="num">{{ s.nivel_cm | numero }}</td>
+        <td class="num">{{ s.nivel_pct_cota | numero }}%</td>
+        <td class="num">{{ s.chuva_1h | numero(1) }}</td>
+        <td class="num">{% if s.bateria_pct is not none %}{{ s.bateria_pct | numero }}%{% else %}—{% endif %}</td>
+        <td>{{ s.atualizado_em | data_hora }}<br><span class="pequeno suave">atualizado {{ s.recebido_em | ha_quanto }}</span></td>
+        {% else %}
+        <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>Sem leitura</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="pequeno suave">"% da cota" é quanto o nível do córrego já subiu em relação à altura em que ele transborda (100%).</p>
+{% endblock %}

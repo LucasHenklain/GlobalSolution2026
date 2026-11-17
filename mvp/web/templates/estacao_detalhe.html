@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone_risco, selo, barra_nivel, bloco_grafico %}
+{% block titulo %}{{ estacao.nome }}{% endblock %}
+{% block conteudo %}
+{% set nivel = situacao.nivel_risco if situacao else "sem_dados" %}
+<p><a href="/estacoes">← Todas as estações</a></p>
+<section class="painel-risco risco-{{ nivel }}" aria-labelledby="titulo-estacao">
+  {{ icone_risco(nivel) }}
+  <p class="sobre">{{ estacao.bairro }} · Zona {{ estacao.zona }} · {{ estacao.estacao_id }}</p>
+  <h1 id="titulo-estacao">{{ estacao.nome }}</h1>
+  <p class="frase">{{ RISCOS[nivel].rotulo }}: {{ RISCOS[nivel].frase }}</p>
+  {% if situacao %}<p class="leitura">Leitura de {{ situacao.atualizado_em | data_hora }} · atualizado {{ situacao.recebido_em | ha_quanto }}</p>{% endif %}
+</section>
+{% if dado_velho %}<p class="aviso aviso-erro" role="status">Atenção: não chegam dados novos desta estação {{ situacao.recebido_em | ha_quanto }}. Ela pode estar sem conexão.</p>{% endif %}
+
+<div class="colunas">
+  <div class="pilha">
+    {% if situacao %}
+    <section class="cartao cartao-estacao risco-{{ nivel }}" aria-labelledby="titulo-agora">
+      <h2 id="titulo-agora">Agora</h2>
+      <dl class="medidas">
+        <div><dt>Nível do córrego</dt><dd><strong>{{ situacao.nivel_cm | numero }} cm</strong> {{ situacao.nivel_pct_cota | numero }}% da cota de transbordo</dd></div>
+        <div><dt>Chuva na última hora</dt><dd><strong>{{ situacao.chuva_1h | numero(1) }} mm</strong> {% if situacao.chuva_24h is not none %}{{ situacao.chuva_24h | numero(1) }} mm em 24 horas{% endif %}</dd></div>
+        <div><dt>Chance de transbordar em 1 hora</dt><dd><strong>{{ situacao.prob_transbordo_60min | porcento }}</strong> previsão da IA</dd></div>
+        <div><dt>Bateria da estação</dt><dd><strong>{% if situacao.bateria_pct is not none %}{{ situacao.bateria_pct | numero }}%{% else %}—{% endif %}</strong> {% if situacao.bateria_pct is not none and situacao.bateria_pct < 20 %}bateria fraca{% else %}carga{% endif %}</dd></div>
+      </dl>
+      {{ barra_nivel(situacao, estacao) }}
+      <p class="pequeno suave">A barra mostra o nível do córrego; os três risquinhos são as cotas de atenção, alerta e transbordo.</p>
+    </section>
+    {% endif %}
+    <section class="cartao" aria-labelledby="titulo-grafico">
+      <h2 id="titulo-grafico">Nível do córrego e chuva nas últimas horas</h2>
+      {{ bloco_grafico(grafico, tabela) }}
+    </section>
+  </div>
+
+  <div class="pilha">
+    <section class="cartao" aria-labelledby="titulo-cotas">
+      <h2 id="titulo-cotas">Cotas do córrego</h2>
+      <table>
+        <caption class="so-leitor">Alturas de referência do nível da água</caption>
+        <tbody>
+          <tr><th scope="row">Atenção</th><td class="num">{{ estacao.cota_atencao_cm | numero }} cm</td></tr>
+          <tr><th scope="row">Alerta (a sirene toca)</th><td class="num">{{ estacao.cota_alerta_cm | numero }} cm</td></tr>
+          <tr><th scope="row">Transbordo</th><td class="num">{{ estacao.cota_transbordo_cm | numero }} cm</td></tr>
+          <tr><th scope="row">Moradores na área (estimativa simulada)</th><td class="num">{{ estacao.moradores_area }}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="cartao" aria-labelledby="titulo-alertas">
+      <h2 id="titulo-alertas">Últimos alertas</h2>
+      {% if alertas %}
+      <ul class="lista-marcada">
+        {% for alerta in alertas %}<li class="risco-{{ alerta.nivel_risco }}"><strong>{{ RISCOS[alerta.nivel_risco].rotulo }}</strong> · {{ alerta.emitido_em | data_hora }}<br>{{ alerta.titulo }}</li>{% endfor %}
+      </ul>
+      {% if usuario %}<p><a href="/alertas">Ver os alertas completos</a></p>{% else %}<p class="pequeno suave"><a href="/entrar">Entre</a> para ler os alertas completos.</p>{% endif %}
+      {% else %}<p class="suave">Nenhum alerta enviado para esta estação.</p>{% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

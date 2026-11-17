@@ -49,7 +49,7 @@ def carregar_config() -> Config:
         secret_key=os.environ.get("VIGIA_SECRET_KEY", ""),
         chave_dados=os.environ.get("VIGIA_CHAVE_DADOS", ""),
         token_interno=os.environ.get("VIGIA_TOKEN_INTERNO", _TOKEN_DEV),
-        app_url=os.environ.get("VIGIA_APP_URL", "http://localhost:8000").rstrip("/"),
+        app_url=os.environ.get("VIGIA_APP_URL", "http://127.0.0.1:8000").rstrip("/"),
         mqtt_host=os.environ.get("MQTT_HOST", "localhost"),
         mqtt_port=int(os.environ.get("MQTT_PORT", "1883")),
         mqtt_prefixo=os.environ.get("MQTT_PREFIXO", "vigia").strip("/"),

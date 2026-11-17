@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone_risco %}
+{% block titulo %}{{ alerta.titulo }}{% endblock %}
+{% block conteudo %}
+<p><a href="/alertas">← Voltar para os alertas</a></p>
+<section class="painel-risco risco-{{ alerta.nivel_risco }}" aria-labelledby="titulo-alerta">
+  {{ icone_risco(alerta.nivel_risco) }}
+  <p class="sobre">{{ RISCOS[alerta.nivel_risco].rotulo }} · {{ estacoes[alerta.estacao_id].nome if alerta.estacao_id in estacoes else alerta.estacao_id }}</p>
+  <h1 id="titulo-alerta">{{ alerta.titulo }}</h1>
+  <p class="frase">{{ alerta.mensagem }}</p>
+  <p class="leitura">Enviado em {{ alerta.emitido_em | data_hora }} (horário de Brasília)</p>
+</section>
+
+<div class="colunas colunas-iguais">
+  <section class="cartao risco-{{ alerta.nivel_risco }}" aria-labelledby="titulo-fazer">
+    <h2 id="titulo-fazer">O que fazer</h2>
+    {% if alerta.orientacoes %}
+    <ul class="lista-marcada lista-passos">{% for passo in alerta.orientacoes %}<li>{{ passo }}</li>{% endfor %}</ul>
+    {% else %}<p class="suave">Este alerta não trouxe orientações.</p>{% endif %}
+  </section>
+
+  <section class="cartao risco-{{ alerta.nivel_risco }}" aria-labelledby="titulo-porque">
+    <h2 id="titulo-porque">Por que este alerta foi enviado</h2>
+    {% if alerta.motivo %}
+    <ul class="lista-marcada">{% for motivo in alerta.motivo %}<li>{{ motivo }}</li>{% endfor %}</ul>
+    {% endif %}
+    <table>
+      <caption class="so-leitor">Medições no momento do alerta</caption>
+      <tbody>
+        <tr><th scope="row">Nível do córrego</th><td class="num">{{ alerta.nivel_cm | numero }} cm</td></tr>
+        <tr><th scope="row">Chuva na última hora</th><td class="num">{{ alerta.chuva_1h | numero(1) }} mm</td></tr>
+        <tr><th scope="row">Chance de transbordo em 1 hora</th><td class="num">{{ alerta.prob | porcento }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="cartao" aria-labelledby="titulo-sms">
+    <h2 id="titulo-sms">Mensagem enviada por SMS</h2>
+    <p class="sms">{{ alerta.mensagem_sms }}</p>
+    <p class="pequeno suave">{{ alerta.mensagem_sms | length }} de 160 caracteres. Sem acentos, para chegar certo em qualquer celular.</p>
+  </section>
+
+  <section class="cartao" aria-labelledby="titulo-origem">
+    <h2 id="titulo-origem">Quem decidiu este alerta</h2>
+    <p><strong>{{ origem_texto }}</strong></p>
+    <p class="pequeno suave">Código da decisão: {{ alerta.origem_decisao }} · Alerta {{ alerta.alerta_id }}</p>
+  </section>
+</div>
+{% endblock %}

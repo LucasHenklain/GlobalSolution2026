@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_macros.html" import selo %}
+{% block titulo %}Alertas{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <h1>Alertas</h1>
+  <p class="suave">{% if todas %}Todas as estações{% else %}Alertas da sua área{% endif %}</p>
+</div>
+{% if alertas %}
+<ul class="itens">
+  {% for alerta in alertas %}
+  <li class="risco-{{ alerta.nivel_risco }}">
+    <div class="item-topo">{{ selo(alerta.nivel_risco) }}<span class="pequeno suave">{{ alerta.emitido_em | data_hora }} · {{ estacoes[alerta.estacao_id].nome if alerta.estacao_id in estacoes else alerta.estacao_id }}</span></div>
+    <h3><a href="/alertas/{{ alerta.alerta_id }}">{{ alerta.titulo }}</a></h3>
+    <p>{{ alerta.mensagem }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="vazio">Nenhum alerta por enquanto. Quando houver risco de enchente, o aviso aparece aqui.</p>
+{% endif %}
+{% endblock %}

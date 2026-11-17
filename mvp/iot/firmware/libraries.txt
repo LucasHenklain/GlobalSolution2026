@@ -1,0 +1,6 @@
+# Wokwi Library List
+# See https://docs.wokwi.com/guides/libraries
+# No editor web do Wokwi, instale pelo "Library Manager" (botão +): o arquivo não é lido automaticamente.
+
+PubSubClient
+ArduinoJson

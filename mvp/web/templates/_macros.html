@@ -1,0 +1,99 @@
+{# Pedaços de tela usados em mais de uma página. #}
+
+{% macro icone_risco(nivel) %}<svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/static/icones.svg#risco-{{ nivel }}"/></svg>{% endmacro %}
+
+{# Selo de risco: cor + ícone + texto (nunca só a cor). #}
+{% macro selo(nivel) %}<span class="selo risco-{{ nivel }}">{{ icone_risco(nivel) }}{{ RISCOS[nivel].rotulo }}</span>{% endmacro %}
+
+{# Barra do nível: vai de 0 a 125% da cota de transbordo; os três risquinhos são as cotas de atenção, alerta e transbordo. #}
+{% macro barra_nivel(situacao, estacao) %}
+<svg class="barra" viewBox="0 0 125 10" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <rect class="barra-fundo" width="125" height="10"/>
+  <rect class="barra-valor" width="{{ [situacao.nivel_pct_cota, 125] | min | round(1) }}" height="10"/>
+  {% for cota in (estacao.cota_atencao_cm, estacao.cota_alerta_cm, estacao.cota_transbordo_cm) %}
+  <line class="barra-marca" x1="{{ (cota / estacao.cota_transbordo_cm * 100) | round(1) }}" y1="0" x2="{{ (cota / estacao.cota_transbordo_cm * 100) | round(1) }}" y2="10"/>
+  {% endfor %}
+</svg>
+{% endmacro %}
+
+{% macro cartao_estacao(estacao, situacao) %}
+{% set nivel = situacao.nivel_risco if situacao else "sem_dados" %}
+<article class="cartao cartao-estacao risco-{{ nivel }}">
+  <div>
+    <h3><a href="/estacoes/{{ estacao.estacao_id }}">{{ estacao.nome }}</a></h3>
+    <p class="suave pequeno">{{ estacao.bairro }} · Zona {{ estacao.zona }}</p>
+  </div>
+  <p>{{ selo(nivel) }}</p>
+  <p>{{ RISCOS[nivel].frase }}</p>
+  {% if situacao %}
+  <dl class="medidas">
+    <div><dt>Nível do córrego</dt><dd><strong>{{ situacao.nivel_pct_cota | numero }}%</strong> da cota de transbordo</dd></div>
+    <div><dt>Chuva na última hora</dt><dd><strong>{{ situacao.chuva_1h | numero(1) }}</strong> milímetros</dd></div>
+  </dl>
+  {{ barra_nivel(situacao, estacao) }}
+  <p class="leitura">Leitura de {{ situacao.atualizado_em | data_hora }} · atualizado {{ situacao.recebido_em | ha_quanto }}</p>
+  {% endif %}
+</article>
+{% endmacro %}
+
+{# Campo de formulário com rótulo, dica e mensagem de erro ligada ao campo (aria-describedby). #}
+{% macro campo(nome, rotulo, erros, tipo="text", valor="", dica="", obrigatorio=false, atributos={}) %}
+<div class="campo{% if erros[nome] %} com-erro{% endif %}">
+  <label for="{{ nome }}">{{ rotulo }}{% if not obrigatorio %} <span class="opcional">(opcional)</span>{% endif %}</label>
+  {% if dica %}<span class="dica" id="{{ nome }}-dica">{{ dica }}</span>{% endif %}
+  <input type="{{ tipo }}" id="{{ nome }}" name="{{ nome }}" value="{{ valor }}"{% if obrigatorio %} required{% endif %}
+    {%- if erros[nome] %} aria-invalid="true" aria-describedby="{{ nome }}-erro"{% elif dica %} aria-describedby="{{ nome }}-dica"{% endif %}{{ atributos | xmlattr }}>
+  {{ erro(nome, erros) }}
+</div>
+{% endmacro %}
+
+{% macro erro(nome, erros) %}{% if erros[nome] %}<span class="erro-campo" id="{{ nome }}-erro">Erro: {{ erros[nome] }}</span>{% endif %}{% endmacro %}
+
+{% macro selecao_estacao(estacoes, escolhida, erros, rotulo="Onde você mora", obrigatorio=true) %}
+<div class="campo{% if erros.estacao_id %} com-erro{% endif %}">
+  <label for="estacao_id">{{ rotulo }}</label>
+  <span class="dica" id="estacao_id-dica">Escolha o córrego mais perto.</span>
+  <select id="estacao_id" name="estacao_id"{% if obrigatorio %} required{% endif %} aria-describedby="estacao_id-dica{% if erros.estacao_id %} estacao_id-erro{% endif %}">
+    <option value="">{% if obrigatorio %}Escolha…{% else %}Nenhuma{% endif %}</option>
+    {% for est in estacoes.values() %}
+    <option value="{{ est.estacao_id }}"{% if est.estacao_id == escolhida %} selected{% endif %}>{{ est.nome }} — {{ est.bairro }}</option>
+    {% endfor %}
+  </select>
+  {{ erro("estacao_id", erros) }}
+</div>
+{% endmacro %}
+
+{% macro atualizacao(caminho, auto_atualizar) %}
+<p class="pequeno suave">
+  {% if auto_atualizar %}Esta página se atualiza sozinha a cada 1 minuto. <a href="{{ caminho }}">Desligar</a>
+  {% else %}<a href="{{ caminho }}">Atualizar agora</a> · <a href="{{ caminho }}?auto=1">Atualizar sozinha a cada 1 minuto</a>{% endif %}
+</p>
+{% endmacro %}
+
+{# Gráfico SVG (montado no servidor) com legenda em texto e os mesmos números em tabela. #}
+{% macro bloco_grafico(grafico, tabela) %}
+{% if grafico %}
+  {{ grafico }}
+  <ul class="legenda" aria-hidden="true">
+    <li><svg viewBox="0 0 26 10"><line class="g-linha" x1="1" y1="5" x2="25" y2="5"/></svg>nível do córrego</li>
+    <li><svg viewBox="0 0 26 10"><line class="g-cota g-cota-atencao" x1="0" y1="5" x2="26" y2="5"/></svg>atenção</li>
+    <li><svg viewBox="0 0 26 10"><line class="g-cota g-cota-alerta" x1="0" y1="5" x2="26" y2="5"/></svg>alerta</li>
+    <li><svg viewBox="0 0 26 10"><line class="g-cota g-cota-transbordo" x1="0" y1="5" x2="26" y2="5"/></svg>transbordo</li>
+    <li><svg viewBox="0 0 26 10"><rect class="g-chuva" x="9" y="0" width="8" height="10" rx="1.5"/></svg>chuva</li>
+  </ul>
+  <details>
+    <summary>Ver os números do gráfico</summary>
+    <div class="rolagem">
+      <table>
+        <caption class="so-leitor">Nível do córrego e chuva, de hora em hora</caption>
+        <thead><tr><th scope="col">Hora</th><th scope="col" class="num">Nível (cm)</th><th scope="col" class="num">Chuva na hora (mm)</th></tr></thead>
+        <tbody>
+          {% for linha in tabela %}<tr><td>{{ linha.hora }}</td><td class="num">{{ linha.nivel_cm | numero }}</td><td class="num">{{ linha.chuva_mm | numero(1) }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+{% else %}
+  <p class="vazio">Ainda não há histórico para desenhar o gráfico.</p>
+{% endif %}
+{% endmacro %}

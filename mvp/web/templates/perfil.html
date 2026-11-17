@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, selecao_estacao %}
+{% block titulo %}Perfil{% endblock %}
+{% block conteudo %}
+<h1>Perfil</h1>
+<div class="colunas colunas-iguais">
+  <section class="cartao" aria-labelledby="titulo-dados">
+    <h2 id="titulo-dados">Meus dados e preferências</h2>
+    {% if erros %}<p class="aviso aviso-erro" role="alert">Confira os campos marcados com erro e salve de novo.</p>{% endif %}
+    <form method="post" action="/perfil" novalidate>
+      {% include "_csrf.html" %}
+      {{ campo("nome", "Nome", erros, valor=valores.nome, obrigatorio=true, atributos={"autocomplete": "name", "maxlength": 80}) }}
+      <p class="pequeno suave">E-mail da conta: {{ usuario.email }}</p>
+      {% if telefone_mascarado %}
+        {{ campo("telefone", "Trocar o celular", erros, tipo="tel", valor=valores.telefone, dica="Celular atual: " ~ telefone_mascarado ~ ". Deixe em branco para manter.", atributos={"autocomplete": "tel-national", "maxlength": 20}) }}
+        <label class="marcar" for="remover_telefone"><input type="checkbox" id="remover_telefone" name="remover_telefone" value="sim"><span>Apagar meu celular do cadastro</span></label>
+      {% else %}
+        {{ campo("telefone", "Celular com DDD", erros, tipo="tel", valor=valores.telefone, dica="Para receber o alerta por SMS. Exemplo: (11) 91234-5678.", atributos={"autocomplete": "tel-national", "maxlength": 20}) }}
+      {% endif %}
+      {{ selecao_estacao(estacoes, valores.estacao_id, erros, obrigatorio=usuario.papel == "morador") }}
+      <fieldset>
+        <legend>Preferências</legend>
+        <label class="marcar" for="receber_sms"><input type="checkbox" id="receber_sms" name="receber_sms" value="sim"{% if valores.receber_sms %} checked{% endif %}><span>Receber alertas por SMS</span></label>
+        <label class="marcar" for="fonte_grande"><input type="checkbox" id="fonte_grande" name="fonte_grande" value="sim"{% if valores.fonte_grande %} checked{% endif %}><span>Letras grandes</span></label>
+        <label class="marcar" for="alto_contraste"><input type="checkbox" id="alto_contraste" name="alto_contraste" value="sim"{% if valores.alto_contraste %} checked{% endif %}><span>Alto contraste (fundo preto e letras claras)</span></label>
+      </fieldset>
+      <p class="acoes"><button class="botao" type="submit">Salvar</button></p>
+    </form>
+  </section>
+
+  <div class="pilha">
+    <section class="cartao" aria-labelledby="titulo-lgpd">
+      <h2 id="titulo-lgpd">Seus dados são seus</h2>
+      <p>Guardamos só o necessário para enviar os alertas: nome, e-mail, celular (guardado embaralhado, com criptografia) e a área onde você mora.</p>
+      <form method="post" action="/perfil/exportar">
+        {% include "_csrf.html" %}
+        <p class="acoes"><button class="botao botao-claro" type="submit">Baixar meus dados (arquivo JSON)</button></p>
+      </form>
+    </section>
+
+    <section class="cartao zona-perigo" aria-labelledby="titulo-excluir">
+      <h2 id="titulo-excluir">Excluir minha conta</h2>
+      <p>Apaga seu nome, e-mail, celular e preferências. Você deixa de receber alertas. Suas ocorrências ficam sem identificação e sem o texto que você escreveu. <strong>Não dá para desfazer.</strong></p>
+      {% if erro_exclusao %}<p class="aviso aviso-erro" role="alert">{{ erro_exclusao }}</p>{% endif %}
+      <form method="post" action="/perfil/excluir">
+        {% include "_csrf.html" %}
+        <div class="campo">
+          <label for="senha_exclusao">Digite sua senha para confirmar</label>
+          <input type="password" id="senha_exclusao" name="senha" required autocomplete="current-password" maxlength="72">
+        </div>
+        <p class="acoes"><button class="botao botao-perigo" type="submit">Excluir minha conta e meus dados</button></p>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

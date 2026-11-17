@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Minhas ocorrências{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <h1>Minhas ocorrências</h1>
+  <a class="botao" href="/ocorrencias/nova">Relatar ocorrência</a>
+</div>
+{% if ocorrencias %}
+<ul class="itens">
+  {% for o in ocorrencias %}
+  <li>
+    <div class="item-topo">
+      <span class="etiqueta etiqueta-{{ o.status }}">{{ STATUS_OCORRENCIA.get(o.status, o.status) }}</span>
+      <span class="pequeno suave">nº {{ o.id }} · {{ o.criada_em | data_hora }} · {{ estacoes[o.estacao_id].nome if o.estacao_id in estacoes else o.estacao_id }}</span>
+    </div>
+    <h3>{{ TIPOS_OCORRENCIA.get(o.tipo, o.tipo) }}</h3>
+    {% if o.descricao %}<p class="quebra">{{ o.descricao }}</p>{% endif %}
+    {% if o.encerrada_em %}<p class="pequeno suave">Resolvida em {{ o.encerrada_em | data_hora }}</p>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="vazio">Você ainda não relatou nenhuma ocorrência.</p>
+{% endif %}
+{% endblock %}

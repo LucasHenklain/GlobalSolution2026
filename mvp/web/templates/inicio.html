@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cartao_estacao, atualizacao %}
+{% block titulo %}Situação dos córregos agora{% endblock %}
+{% block conteudo %}
+<section class="heroi">
+  <h1>Saiba antes de a água subir.</h1>
+  <p>O VigIA mede a chuva e o nível do córrego perto da sua casa e avisa quando há risco de enchente, no celular e por SMS.</p>
+  {% if not usuario %}
+  <p class="acoes"><a class="botao" href="/cadastro">Quero receber alertas</a> <a class="botao botao-claro" href="/entrar">Já tenho conta</a></p>
+  {% else %}
+  <p class="acoes"><a class="botao" href="{% if usuario.papel == 'agente' %}/agente{% else %}/minha-area{% endif %}">Ver o meu painel</a></p>
+  {% endif %}
+</section>
+
+<section aria-labelledby="titulo-situacao">
+  <div class="cabecalho-pagina">
+    <h2 id="titulo-situacao">Situação agora</h2>
+    {{ atualizacao("/", auto_atualizar) }}
+  </div>
+  <div class="grade">
+    {% for estacao in estacoes.values() %}{{ cartao_estacao(estacao, situacoes.get(estacao.estacao_id)) }}{% endfor %}
+  </div>
+</section>
+
+<section class="cartao" aria-labelledby="titulo-como">
+  <h2 id="titulo-como">Como funciona</h2>
+  <ol class="passos pilha">
+    <li><span><strong>Sensores no córrego</strong> medem o nível da água e a chuva a todo momento.</span></li>
+    <li><span><strong>A inteligência artificial</strong> calcula a chance de o córrego transbordar na próxima hora.</span></li>
+    <li><span><strong>Você recebe o aviso</strong> com o que fazer, em palavras simples, e a sirene da estação toca.</span></li>
+    <li><span><strong>Você também ajuda:</strong> relate bueiro entupido ou ponto de alagamento para a Defesa Civil.</span></li>
+  </ol>
+</section>
+{% endblock %}

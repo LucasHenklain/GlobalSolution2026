@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 838" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3b4652"/>
+    </marker>
+    <marker id="setaL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#c2410c"/>
+    </marker>
+    <style>
+      .area { fill: #f7f8fa; stroke: #c9d1da; stroke-width: 1.2; rx: 10; }
+      .tit { font-weight: 700; font-size: 14px; fill: #0b1f33; }
+      .sub { fill: #51606f; font-size: 11.5px; }
+      .cx { fill: #ffffff; stroke: #8a97a6; stroke-width: 1.2; rx: 7; }
+      .cxa { fill: #e8f1fb; stroke: #2a78d6; stroke-width: 1.4; rx: 7; }
+      .nome { font-weight: 600; fill: #0b1f33; }
+      .det { fill: #51606f; font-size: 11px; }
+      .fl { stroke: #3b4652; stroke-width: 1.6; fill: none; marker-end: url(#seta); }
+      .flr { stroke: #c2410c; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; marker-end: url(#setaL); }
+      .rot { fill: #3b4652; font-size: 11px; }
+      .rotr { fill: #c2410c; font-size: 11px; font-weight: 600; }
+      .b3 { fill: #1f7a4d; } .b2 { fill: #2a78d6; } .b1 { fill: #6250d6; } .b4 { fill: #51606f; }
+      .selo { fill: #ffffff; font-size: 11px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1280" height="838" fill="#ffffff"/>
+  <text x="24" y="34" font-size="20" font-weight="700" fill="#0b1f33">VigIA — arquitetura geral</text>
+  <text x="24" y="54" class="sub" font-size="13">Do sensor no córrego ao aviso no celular do morador. Setas cheias: dados. Setas tracejadas: comando de volta à estação.</text>
+
+  <g transform="translate(0,8)">
+  <!-- ÁREA 3: IoT -->
+  <rect class="area" x="20" y="76" width="250" height="470"/>
+  <rect class="b3" x="20" y="76" width="250" height="26" rx="10"/><text class="selo" x="32" y="94">ÁREA 3 · IoT (campo)</text>
+  <rect class="cx" x="36" y="116" width="218" height="178"/>
+  <text class="nome" x="48" y="137">Estação ESP32 (Wokwi)</text>
+  <text class="det" x="48" y="156">• HC-SR04: nível do córrego</text>
+  <text class="det" x="48" y="172">• pluviômetro de báscula: chuva</text>
+  <text class="det" x="48" y="188">• bateria (potenciômetro)</text>
+  <text class="det" x="48" y="208">• sirene + LEDs verde/amarelo/vermelho</text>
+  <text class="det" x="48" y="228" font-weight="600" fill="#1f7a4d">Regra local: toca a sirene sozinha,</text>
+  <text class="det" x="48" y="243" font-weight="600" fill="#1f7a4d">mesmo sem internet</text>
+  <text class="det" x="48" y="263">Guarda-e-reenvia: 60 leituras</text>
+  <text class="det" x="48" y="279">em memória quando cai a rede</text>
+  <rect class="cx" x="36" y="312" width="218" height="92"/>
+  <text class="nome" x="48" y="333">Emulador de estações (Python)</text>
+  <text class="det" x="48" y="352">• 4 estações em tempo real</text>
+  <text class="det" x="48" y="368">• replay de temporal real (chuva INMET)</text>
+  <text class="det" x="48" y="384">• mesmo payload do firmware</text>
+  <rect class="cxa" x="36" y="440" width="218" height="86"/>
+  <text class="nome" x="48" y="462">Broker MQTT (Mosquitto)</text>
+  <text class="det" x="48" y="481">vigia/sensores/&lt;estação&gt;/leitura</text>
+  <text class="det" x="48" y="497">vigia/atuadores/&lt;estação&gt;/sirene</text>
+  <text class="det" x="48" y="513">QoS 1 · LWT online/offline</text>
+  <path class="fl" d="M100 404 L100 438"/>
+  <path class="fl" d="M36 250 L27 250 L27 483 L34 483"/>
+  <path class="flr" d="M254 500 C 290 420, 290 250, 256 215"/>
+  <text class="rotr" x="262" y="350" transform="rotate(-90 262 350)">comando da sirene</text>
+
+  <!-- ÁREA 2: Dados -->
+  <rect class="area" x="300" y="76" width="420" height="470"/>
+  <rect class="b2" x="300" y="76" width="420" height="26" rx="10"/><text class="selo" x="312" y="94">ÁREA 2 · Big data e visualização</text>
+  <rect class="cx" x="316" y="440" width="180" height="86"/>
+  <text class="nome" x="328" y="462">Gateway MQTT</text>
+  <text class="det" x="328" y="481">valida na porta (contrato)</text>
+  <text class="det" x="328" y="497">micro-lotes JSONL atômicos</text>
+  <text class="det" x="328" y="513">batimento p/ monitoramento</text>
+  <path class="fl" d="M254 470 L314 470"/>
+  
+
+  <rect class="cx" x="316" y="352" width="180" height="60"/>
+  <text class="nome" x="328" y="374">Landing → BRONZE</text>
+  <text class="det" x="328" y="392">bruto imutável + manifesto</text>
+  <rect class="cx" x="316" y="262" width="180" height="62"/>
+  <text class="nome" x="328" y="284">SILVER</text>
+  <text class="det" x="328" y="301">contrato YAML · sem duplicatas</text>
+  <text class="det" x="328" y="315">reprovadas → quarentena</text>
+  <rect class="cxa" x="316" y="130" width="180" height="104"/>
+  <text class="nome" x="328" y="152">GOLD (Parquet + DuckDB)</text>
+  <text class="det" x="328" y="170">fato_leitura (features 10 min)</text>
+  <text class="det" x="328" y="185">fato_risco · fato_alerta</text>
+  <text class="det" x="328" y="200">fato_evento · fato_ocorrencia</text>
+  <text class="det" x="328" y="215">agg_diario · dim_estacao</text>
+  <path class="fl" d="M406 440 L406 414"/>
+  <path class="fl" d="M406 352 L406 326"/>
+  <path class="fl" d="M406 262 L406 236"/>
+
+  <rect class="cx" x="524" y="352" width="180" height="60"/>
+  <text class="nome" x="536" y="374">INMET (dado público real)</text>
+  <text class="det" x="536" y="392">chuva horária, 2019–2025</text>
+  <path class="fl" d="M524 382 L498 382"/>
+  <rect class="cx" x="524" y="262" width="180" height="62"/>
+  <text class="nome" x="536" y="284">Simulação hidrológica</text>
+  <text class="det" x="536" y="301">nível do córrego a partir da</text>
+  <text class="det" x="536" y="315">chuva real (declarada)</text>
+  <path class="fl" d="M614 352 L614 326"/>
+  <path class="fl" d="M524 293 L498 293"/>
+  <rect class="cx" x="524" y="130" width="180" height="104"/>
+  <text class="nome" x="536" y="152">Dashboard (Streamlit)</text>
+  <text class="det" x="536" y="170">Painel da Defesa Civil</text>
+  <text class="det" x="536" y="185">filtros: período, estações, risco</text>
+  <text class="det" x="536" y="200">6 indicadores · medidas DAX</text>
+  <text class="det" x="536" y="215">"onde agir primeiro"</text>
+  <path class="fl" d="M496 170 L522 170"/>
+
+  <!-- ÁREA 1: IA -->
+  <rect class="area" x="750" y="76" width="230" height="470"/>
+  <rect class="b1" x="750" y="76" width="230" height="26" rx="10"/><text class="selo" x="762" y="94">ÁREA 1 · IA e automação</text>
+  <rect class="cx" x="766" y="130" width="198" height="104"/>
+  <text class="nome" x="778" y="152">Modelo de previsão</text>
+  <text class="det" x="778" y="170">scikit-learn (gradient boosting)</text>
+  <text class="det" x="778" y="185">P(transbordo em 60 min)</text>
+  <text class="det" x="778" y="200">treino 2019–22 · teste 2024–25</text>
+  <text class="det" x="778" y="215">mesmas features do gold</text>
+  <rect class="cx" x="766" y="262" width="198" height="150"/>
+  <text class="nome" x="778" y="284">Agente de alerta (regras)</text>
+  <text class="det" x="778" y="302">R1–R5: nível de risco</text>
+  <text class="det" x="778" y="317">(verde/amarelo/laranja/vermelho)</text>
+  <text class="det" x="778" y="335">R6–R9: quando avisar, lembrete,</text>
+  <text class="det" x="778" y="350">sem repetição, normalização</text>
+  <text class="det" x="778" y="368">R10: SMS + sirene</text>
+  <text class="det" x="778" y="386">mensagens em linguagem simples</text>
+  <text class="det" x="778" y="401">+ "por quê" (motivos dos dados)</text>
+  <path class="fl" d="M865 234 L865 260"/>
+  <path class="fl" d="M496 146 C 600 112, 700 112, 764 146"/>
+  <text class="rot" x="596" y="118">a IA lê o gold</text>
+  <path class="fl" d="M766 220 L735 220 L735 247 L510 247 L510 215 L498 215"/>
+  <text class="rot" x="548" y="259">risco e alertas voltam ao gold</text>
+  <path class="flr" d="M865 412 L865 572 L145 572 L145 530"/>
+  <text class="rotr" x="560" y="566">comando da sirene (laranja e vermelho)</text>
+
+  <!-- ÁREA 3: App -->
+  <rect class="area" x="1010" y="76" width="250" height="470"/>
+  <rect class="b3" x="1010" y="76" width="250" height="26" rx="10"/><text class="selo" x="1022" y="94">ÁREA 3 · MVP web</text>
+  <rect class="cxa" x="1026" y="130" width="218" height="150"/>
+  <text class="nome" x="1038" y="152">App web (FastAPI + Jinja)</text>
+  <text class="det" x="1038" y="170">início público · cadastro/login</text>
+  <text class="det" x="1038" y="185">minha área · alertas · estações</text>
+  <text class="det" x="1038" y="200">relatar ocorrência · perfil (LGPD)</text>
+  <text class="det" x="1038" y="215">painel do agente (sirene, SMS)</text>
+  <text class="det" x="1038" y="233">HTML leve, sem JS · /status.txt</text>
+  <text class="det" x="1038" y="251">API interna com token</text>
+  <text class="det" x="1038" y="266">/health · /metrics</text>
+  <rect class="cx" x="1026" y="300" width="218" height="60"/>
+  <text class="nome" x="1038" y="322">SQLite</text>
+  <text class="det" x="1038" y="340">senha bcrypt · telefone cifrado (Fernet)</text>
+  <rect class="cx" x="1026" y="382" width="218" height="60"/>
+  <text class="nome" x="1038" y="404">Caixa de SMS (simulada)</text>
+  <text class="det" x="1038" y="422">160 caracteres, sem acento</text>
+  <rect class="cx" x="1026" y="464" width="218" height="62" fill="#fff7e6" stroke="#b7791f"/>
+  <text class="nome" x="1038" y="486">Morador e agente da Defesa Civil</text>
+  <text class="det" x="1038" y="504">celular simples, internet instável</text>
+  <text class="det" x="1038" y="518">relata bueiro entupido, alagamento</text>
+  <path class="fl" d="M964 272 L1024 272"/>
+  <text class="rot" x="995" y="250" text-anchor="middle">situação</text>
+  <text class="rot" x="995" y="263" text-anchor="middle">e alertas</text>
+  <path class="fl" d="M1135 280 L1135 298"/>
+  <path class="fl" d="M1135 360 L1135 380"/>
+  <path class="fl" d="M1135 442 L1135 462"/>
+  <path class="fl" d="M1026 330 L995 330 L995 596 L285 596 L285 382 L314 382"/>
+  <text class="rot" x="560" y="590">ocorrências dos moradores (sem dado pessoal)</text>
+
+  <!-- ÁREA 4 -->
+  <rect class="area" x="20" y="620" width="1240" height="160"/>
+  <rect class="b4" x="20" y="620" width="1240" height="26" rx="10"/><text class="selo" x="32" y="638">ÁREA 4 · DevOps, segurança e qualidade (envolve todas as áreas)</text>
+  <rect class="cx" x="36" y="660" width="290" height="104"/>
+  <text class="nome" x="48" y="681">Docker Compose</text>
+  <text class="det" x="48" y="699">1 imagem · 8 serviços: mosquitto, preparo, app,</text>
+  <text class="det" x="48" y="714">gateway, pipeline, ia, dashboard, emulador</text>
+  <text class="det" x="48" y="732">healthchecks · volume único · usuário sem root</text>
+  <text class="det" x="48" y="750">`docker compose up --build` sobe tudo</text>
+  <rect class="cx" x="342" y="660" width="290" height="104"/>
+  <text class="nome" x="354" y="681">CI/CD (GitHub Actions)</text>
+  <text class="det" x="354" y="699">push → ruff → bandit → pip-audit → pytest</text>
+  <text class="det" x="354" y="714">→ build da imagem → pilha no ar + teste de</text>
+  <text class="det" x="354" y="729">fumaça ponta a ponta → publica imagem (GHCR)</text>
+  <text class="det" x="354" y="750">mesmos passos locais: python -m devops.ci_local</text>
+  <rect class="cx" x="648" y="660" width="290" height="104"/>
+  <text class="nome" x="660" y="681">Segurança</text>
+  <text class="det" x="660" y="699">autenticação (bcrypt, sessão assinada, bloqueio)</text>
+  <text class="det" x="660" y="714">CSRF · validação de entrada (Pydantic, contrato)</text>
+  <text class="det" x="660" y="729">telefone cifrado · LGPD (exportar/excluir)</text>
+  <text class="det" x="660" y="750">papéis morador × agente · token interno · CSP</text>
+  <rect class="cx" x="954" y="660" width="290" height="104"/>
+  <text class="nome" x="966" y="681">Qualidade e monitoramento</text>
+  <text class="det" x="966" y="699">testes: unidade, integração, ponta a ponta</text>
+  <text class="det" x="966" y="714">plano com 21 casos · cobertura</text>
+  <text class="det" x="966" y="732">/health · /metrics · batimentos · logs JSON</text>
+  <text class="det" x="966" y="750">python -m devops.monitor</text>
+  </g>
+  <text class="sub" x="24" y="808">Integração entre as áreas: os sensores alimentam o pipeline e o dashboard; a IA lê o gold e devolve risco e alertas ao gold, ao app e à sirene;</text>
+  <text class="sub" x="24" y="824">as ocorrências dos moradores voltam ao data lake. Chuva: INMET (real). Nível dos córregos e moradores por área: simulados (declarado).</text>
+</svg>

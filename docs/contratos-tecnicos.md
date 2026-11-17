@@ -149,7 +149,7 @@ Ocorrência (resposta do GET):
 | VIGIA_SECRET_KEY | (gerada em dev, com aviso) | assinatura do cookie de sessão |
 | VIGIA_CHAVE_DADOS | (gerada em dev, com aviso) | chave Fernet que cifra o telefone |
 | VIGIA_TOKEN_INTERNO | dev-token-interno | token da API interna |
-| VIGIA_APP_URL | http://localhost:8000 | onde o pipeline/agente encontra o app |
+| VIGIA_APP_URL | http://127.0.0.1:8000 | onde o pipeline/agente encontra o app |
 | MQTT_HOST / MQTT_PORT / MQTT_PREFIXO | localhost / 1883 / vigia | broker |
 | VIGIA_AMBIENTE | dev | `dev` \| `teste` \| `prod` (em `prod`, segredos padrão são recusados) |
 

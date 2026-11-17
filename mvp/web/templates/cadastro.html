@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, erro, selecao_estacao %}
+{% block titulo %}Criar conta{% endblock %}
+{% block conteudo %}
+<section class="cartao estreito">
+  <h1>Criar conta</h1>
+  <p>Receba o aviso antes de a água subir no córrego perto da sua casa. É gratuito.</p>
+  {% if erros %}<p class="aviso aviso-erro" role="alert">Confira os campos marcados com erro e envie de novo.</p>{% endif %}
+  <form method="post" action="/cadastro" novalidate>
+    {% include "_csrf.html" %}
+    {{ campo("nome", "Seu nome", erros, valor=valores.nome, obrigatorio=true, atributos={"autocomplete": "name", "maxlength": 80}) }}
+    {{ campo("email", "E-mail", erros, tipo="email", valor=valores.email, obrigatorio=true, atributos={"autocomplete": "email", "maxlength": 254}) }}
+    {{ campo("senha", "Crie uma senha", erros, tipo="password", dica="Pelo menos 8 caracteres, com letra e número.", obrigatorio=true, atributos={"autocomplete": "new-password", "maxlength": 72}) }}
+    {{ campo("telefone", "Celular com DDD", erros, tipo="tel", valor=valores.telefone, dica="Para receber o alerta por SMS. Exemplo: (11) 91234-5678.", atributos={"autocomplete": "tel-national", "maxlength": 20}) }}
+    {{ selecao_estacao(estacoes, valores.estacao_id, erros) }}
+    <div class="campo{% if erros.consentimento %} com-erro{% endif %}">
+      <label class="marcar" for="consentimento">
+        <input type="checkbox" id="consentimento" name="consentimento" value="sim" required{% if erros.consentimento %} aria-invalid="true" aria-describedby="consentimento-erro"{% endif %}>
+        <span>Concordo que o VigIA guarde meu nome, e-mail, celular e a área onde moro <strong>só para me enviar alertas de enchente</strong> e acompanhar minhas ocorrências. Posso baixar ou apagar meus dados quando quiser, na tela Perfil (Lei Geral de Proteção de Dados).</span>
+      </label>
+      {{ erro("consentimento", erros) }}
+    </div>
+    <p class="acoes"><button class="botao" type="submit">Criar minha conta</button></p>
+  </form>
+  <p>Já tem conta? <a href="/entrar">Entrar</a></p>
+</section>
+{% endblock %}

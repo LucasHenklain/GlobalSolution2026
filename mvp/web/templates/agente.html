@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% from "_macros.html" import selo, atualizacao %}
+{% block titulo %}Painel do agente{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <h1>Painel do agente</h1>
+  {{ atualizacao("/agente", auto_atualizar) }}
+</div>
+
+<section id="sirenes" aria-labelledby="titulo-sirenes">
+  <h2 id="titulo-sirenes">Estações e sirenes</h2>
+  <div class="grade">
+    {% for estacao in estacoes.values() %}
+    {% set s = situacoes.get(estacao.estacao_id) %}
+    {% set nivel = s.nivel_risco if s else "sem_dados" %}
+    <article class="cartao cartao-estacao risco-{{ nivel }}">
+      <div>
+        <h3><a href="/estacoes/{{ estacao.estacao_id }}">{{ estacao.nome }}</a></h3>
+        <p class="suave pequeno">{{ estacao.estacao_id }} · {{ estacao.moradores_area }} moradores na área</p>
+      </div>
+      <p>{{ selo(nivel) }}</p>
+      {% if s %}<p class="pequeno">Nível {{ s.nivel_pct_cota | numero }}% da cota · chuva 1 h {{ s.chuva_1h | numero(1) }} mm · chance de transbordo {{ s.prob_transbordo_60min | porcento }}</p>{% endif %}
+      <form class="em-linha" method="post" action="/agente/sirene">
+        {% include "_csrf.html" %}
+        <input type="hidden" name="estacao_id" value="{{ estacao.estacao_id }}">
+        <input type="hidden" name="nivel" value="{{ nivel if nivel in ('amarelo', 'laranja', 'vermelho') else 'vermelho' }}">
+        <input type="hidden" name="segundos" value="30">
+        <button class="botao botao-perigo botao-menor" type="submit" name="acao" value="ligar">Acionar sirene (30 s)</button>
+        <button class="botao botao-claro botao-menor" type="submit" name="acao" value="desligar">Desligar</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% if comandos %}
+  <details>
+    <summary>Últimos comandos de sirene</summary>
+    <ul>
+      {% for c in comandos %}<li>{{ c.enviado_em | data_hora }} · {{ c.estacao_id }} · {{ c.acao }} · {% if c.entregue %}entregue ao broker{% else %}não entregue (broker fora do ar){% endif %}</li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+
+<div class="colunas colunas-iguais">
+  <section id="ocorrencias" aria-labelledby="titulo-ocorrencias">
+    <h2 id="titulo-ocorrencias">Fila de ocorrências</h2>
+    {% if ocorrencias %}
+    <ul class="itens">
+      {% for o in ocorrencias %}
+      <li>
+        <div class="item-topo">
+          <span class="etiqueta etiqueta-{{ o.status }}">{{ STATUS_OCORRENCIA.get(o.status, o.status) }}</span>
+          <span class="pequeno suave">nº {{ o.id }} · {{ o.criada_em | data_hora }} · {{ o.estacao_id }}</span>
+        </div>
+        <h3>{{ TIPOS_OCORRENCIA.get(o.tipo, o.tipo) }}</h3>
+        {% if o.descricao %}<p class="quebra">{{ o.descricao }}</p>{% endif %}
+        <form class="em-linha" method="post" action="/agente/ocorrencias/{{ o.id }}/status">
+          {% include "_csrf.html" %}
+          <label for="status-{{ o.id }}">Mudar status da ocorrência nº {{ o.id }}</label>
+          <select id="status-{{ o.id }}" name="status">
+            {% for codigo, nome in STATUS_OCORRENCIA.items() %}<option value="{{ codigo }}"{% if codigo == o.status %} selected{% endif %}>{{ nome }}</option>{% endfor %}
+          </select>
+          <button class="botao botao-claro botao-menor" type="submit">Salvar</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="vazio">Nenhuma ocorrência relatada.</p>{% endif %}
+  </section>
+
+  <div>
+    <section aria-labelledby="titulo-alertas">
+      <h2 id="titulo-alertas">Alertas recentes</h2>
+      {% if alertas %}
+      <ul class="itens">
+        {% for alerta in alertas %}
+        <li class="risco-{{ alerta.nivel_risco }}">
+          <div class="item-topo">{{ selo(alerta.nivel_risco) }}<span class="pequeno suave">{{ alerta.emitido_em | data_hora }} · {{ alerta.estacao_id }} · decisão: {{ alerta.origem_decisao }}</span></div>
+          <h3><a href="/alertas/{{ alerta.alerta_id }}">{{ alerta.titulo }}</a></h3>
+        </li>
+        {% endfor %}
+      </ul>
+      <p><a href="/alertas">Ver todos os alertas</a></p>
+      {% else %}<p class="vazio">Nenhum alerta emitido.</p>{% endif %}
+    </section>
+
+    <section aria-labelledby="titulo-sms">
+      <h2 id="titulo-sms">Caixa de saída de SMS (simulada)</h2>
+      {% if sms %}
+      <div class="cartao rolagem">
+        <table>
+          <caption class="so-leitor">SMS enfileirados; o telefone aparece mascarado</caption>
+          <thead><tr><th scope="col">Quando</th><th scope="col">Telefone</th><th scope="col">Estação</th><th scope="col">Mensagem</th></tr></thead>
+          <tbody>
+            {% for m in sms %}<tr><td>{{ m.criado_em | data_hora }}</td><td class="sem-quebra">{{ m.telefone_mascarado }}</td><td class="sem-quebra">{{ m.estacao_id }}</td><td>{{ m.mensagem }}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="pequeno suave">Nenhum SMS é enviado de verdade neste protótipo. O telefone completo fica cifrado no banco e não aparece aqui.</p>
+      {% else %}<p class="vazio">Nenhum SMS na fila. Eles são criados quando chega um alerta laranja ou vermelho.</p>{% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}
