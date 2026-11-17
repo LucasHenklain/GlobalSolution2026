@@ -54,7 +54,9 @@ def carregar_config() -> Config:
     )
     if ambiente == "prod":
         # Em produção não existe segredo padrão: falhar cedo é mais seguro do que subir aberto.
-        faltando = [n for n, v in (("VIGIA_SECRET_KEY", cfg.secret_key), ("VIGIA_CHAVE_DADOS", cfg.chave_dados)) if not v]
+        faltando = [
+            n for n, v in (("VIGIA_SECRET_KEY", cfg.secret_key), ("VIGIA_CHAVE_DADOS", cfg.chave_dados)) if not v
+        ]
         if cfg.token_interno == _TOKEN_DEV:
             faltando.append("VIGIA_TOKEN_INTERNO")
         if faltando:

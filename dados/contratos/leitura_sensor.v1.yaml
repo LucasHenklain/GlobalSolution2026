@@ -1,0 +1,26 @@
+# Contrato de dados da leitura de uma estação VigIA (versão 1).
+# É a fonte das regras de qualidade aplicadas no silver (dados/processamento/silver.py).
+# O gateway MQTT aplica as mesmas faixas na porta de entrada (dados/ingestao/gateway_mqtt.py).
+nome: leitura_sensor
+versao: 1
+dono: Grupo 14 - VigIA
+descricao: Uma leitura de nível do córrego e de chuva, publicada pela estação via MQTT.
+chave: [estacao_id, medido_em]   # leituras repetidas com a mesma chave são deduplicadas (fica a recebida por último)
+campos:
+  estacao_id:   {tipo: texto,     obrigatorio: true,  regra: "existe no catálogo de estações"}
+  medido_em:    {tipo: data_hora, obrigatorio: true,  regra: "UTC; no máximo 5 min no futuro"}
+  nivel_cm:     {tipo: numero,    obrigatorio: true,  minimo: 0, maximo: 400, unidade: cm}
+  chuva_mm:     {tipo: numero,    obrigatorio: true,  minimo: 0, maximo: 60,  unidade: "mm desde a leitura anterior"}
+  bateria_pct:  {tipo: numero,    obrigatorio: false, minimo: 0, maximo: 100, unidade: "%"}
+  seq:          {tipo: inteiro,   obrigatorio: false}
+  fw:           {tipo: texto,     obrigatorio: false}
+  origem:       {tipo: texto,     obrigatorio: false, valores: [wokwi, emulador, replay, historico]}
+  recebido_em:  {tipo: data_hora, obrigatorio: false, regra: "carimbo do gateway"}
+regras_de_qualidade:
+  - {id: LEI-01, descricao: "campos obrigatórios presentes e com o tipo certo", acao: quarentena}
+  - {id: LEI-02, descricao: "estacao_id existe no catálogo", acao: quarentena}
+  - {id: LEI-03, descricao: "nivel_cm entre 0 e 400", acao: quarentena}
+  - {id: LEI-04, descricao: "chuva_mm entre 0 e 60", acao: quarentena}
+  - {id: LEI-05, descricao: "medido_em não está no futuro (tolerância de 5 min)", acao: quarentena}
+  - {id: LEI-06, descricao: "chave única (estacao_id, medido_em)", acao: deduplicar}
+  - {id: LEI-07, descricao: "bateria_pct fora de 0-100 vira nulo (não invalida a leitura)", acao: anular_campo}
