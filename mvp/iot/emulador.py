@@ -114,7 +114,7 @@ def nivel_medido(nivel_cm: float, est: Estacao, rng: random.Random) -> float:
 
 def simular(est: Estacao, cenario: str, passos: int, semente: int = 14) -> list[tuple[float, float]]:
     """Série (chuva_mm, nivel_cm) de um cenário, sem MQTT: usada nos testes e para entender o modelo."""
-    rng = random.Random(f"{semente}-{est.estacao_id}")  # noqa: S311 - simulação, não é criptografia
+    rng = random.Random(f"{semente}-{est.estacao_id}")  # noqa: S311 - simulação, não é criptografia # nosec B311
     bacia = criar_bacia(est)
     serie = []
     for passo in range(passos):
@@ -176,7 +176,7 @@ class EstacaoVirtual:
     def __init__(self, est: Estacao, cenario: str = "calmo", semente: int = 14) -> None:
         self.est = est
         self.cenario = cenario
-        self.rng = random.Random(f"{semente}-{est.estacao_id}")  # noqa: S311 - simulação, não é criptografia
+        self.rng = random.Random(f"{semente}-{est.estacao_id}")  # noqa: S311 - simulação, não é criptografia # nosec B311
         self.bacia = criar_bacia(est)
         self.seq = 0
         self.led = "verde"

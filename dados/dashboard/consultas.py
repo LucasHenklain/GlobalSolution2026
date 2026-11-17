@@ -35,7 +35,7 @@ def _filtrar(
     marcadores = ", ".join("?" for _ in estacoes)
     # O caminho vem de camadas (não do usuário) e os filtros entram como parâmetros: sem risco de injeção.
     sql = (
-        f"SELECT * FROM read_parquet('{arquivo}') "  # noqa: S608
+        f"SELECT * FROM read_parquet('{arquivo}') "  # noqa: S608 # nosec B608
         f"WHERE {coluna_tempo} >= ? AND {coluna_tempo} < ? AND estacao_id IN ({marcadores}) {extra} "
         f"ORDER BY {coluna_tempo}"
     )
@@ -46,7 +46,7 @@ def periodo_disponivel(origem: str) -> tuple[pd.Timestamp, pd.Timestamp] | None:
     arquivo = _gold("fato_leitura", origem)
     if arquivo is None:
         return None
-    linha = _consultar(f"SELECT min(medido_em) AS de, max(medido_em) AS ate FROM read_parquet('{arquivo}')", [])  # noqa: S608
+    linha = _consultar(f"SELECT min(medido_em) AS de, max(medido_em) AS ate FROM read_parquet('{arquivo}')", [])  # noqa: S608 # nosec B608
     if linha.empty or pd.isna(linha.loc[0, "de"]):
         return None
     return linha.loc[0, "de"], linha.loc[0, "ate"]

@@ -54,7 +54,9 @@ def test_alerta_sem_transbordo_conta_como_alarme_falso():
 def test_treino_em_dados_sinteticos_aprende_o_padrao():
     from ia.treinar import treinar_modelo
 
-    gold = pd.concat([_gold(NIVEIS).assign(medido_em=lambda d, k=k: d["medido_em"] + pd.Timedelta(days=k)) for k in range(40)])
+    gold = pd.concat(
+        [_gold(NIVEIS).assign(medido_em=lambda d, k=k: d["medido_em"] + pd.Timedelta(days=k)) for k in range(40)]
+    )
     modelo = treinar_modelo(gold.reset_index(drop=True))
     prob = modelo.predict_proba(dataset.preparar_variaveis(_gold(NIVEIS)))[:, 1]
     assert prob[INICIO - 2] > 0.5 > prob[2]  # alto logo antes do transbordo, baixo na calmaria

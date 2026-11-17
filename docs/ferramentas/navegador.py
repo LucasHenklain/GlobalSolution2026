@@ -14,7 +14,9 @@ def ambiente_limpo() -> dict:
 
 
 @contextmanager
-def abrir(largura: int = 1440, altura: int = 900, escala: float = 1.0, video_dir: str | None = None, movel: bool = False):
+def abrir(
+    largura: int = 1440, altura: int = 900, escala: float = 1.0, video_dir: str | None = None, movel: bool = False
+):
     """Devolve (contexto, página) de um Edge sem interface. Com video_dir, grava a navegação em vídeo."""
     with sync_playwright() as p:
         navegador = p.chromium.launch(channel="msedge", headless=True, env=ambiente_limpo())

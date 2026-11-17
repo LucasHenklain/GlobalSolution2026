@@ -1,7 +1,7 @@
 """Serviço da IA: lê o GOLD do pipeline, calcula o risco, emite alertas e entrega ao app e à sirene.
 
 Uso (a partir da raiz do repositório):
-    python -m ia.servico                 # laço a cada 5 s
+    python -m ia.servico                 # laço a cada 2 s
     python -m ia.servico --uma-vez       # um ciclo só (testes e CI)
     python -m ia.servico retroativo      # aplica modelo + agente ao histórico (alimenta o dashboard)
 
@@ -19,6 +19,7 @@ import pandas as pd
 
 from comum.config import carregar_config
 from comum.estacoes import carregar_estacoes
+from comum.http_interno import cliente_do_app
 from comum.log import obter_logger
 from dados import camadas
 from ia import agente
@@ -125,21 +126,19 @@ def _publicar_sirene(alerta: dict) -> bool:
 
 def entregar(situacoes: list[dict], alertas: list[dict], estado: dict) -> dict:
     """Entrega ao app pela API interna. O que não for entregue fica para o próximo ciclo."""
-    cfg = carregar_config()
-    cabecalho = {"X-Token-Interno": cfg.token_interno}
     resumo = {"situacoes": 0, "alertas_novos": 0, "sirenes": 0}
     enviados = set(estado.get("alertas_enviados", []))
+    app = cliente_do_app()
     try:
-        with httpx.Client(base_url=cfg.app_url, headers=cabecalho, timeout=5) as app:
-            app.post("/api/interno/situacao", json=situacoes).raise_for_status()
-            resumo["situacoes"] = len(situacoes)
-            for alerta in alertas:
-                if alerta["alerta_id"] in enviados:
-                    continue
-                app.post("/api/interno/alertas", json=alerta).raise_for_status()
-                enviados.add(alerta["alerta_id"])
-                resumo["alertas_novos"] += 1
-                resumo["sirenes"] += int(_publicar_sirene(alerta))
+        app.post("/api/interno/situacao", json=situacoes).raise_for_status()
+        resumo["situacoes"] = len(situacoes)
+        for alerta in alertas:
+            if alerta["alerta_id"] in enviados:
+                continue
+            app.post("/api/interno/alertas", json=alerta).raise_for_status()
+            enviados.add(alerta["alerta_id"])
+            resumo["alertas_novos"] += 1
+            resumo["sirenes"] += int(_publicar_sirene(alerta))
     except httpx.HTTPError as erro:
         log.warning("app indisponível", extra={"dados": {"erro": type(erro).__name__}})
     estado["alertas_enviados"] = sorted(enviados)
@@ -165,6 +164,10 @@ def ciclo(estado: dict) -> dict | None:
 def rodar(intervalo_s: float, uma_vez: bool) -> None:
     arquivo_estado = camadas.caminho("gold", "_ia_estado.json")
     estado = camadas.ler_json(arquivo_estado, padrao={})
+    try:
+        carregar_pacote()  # carrega o modelo já na subida: o primeiro alerta não espera a leitura do arquivo
+    except ModeloAusenteError:
+        log.warning("modelo ausente na subida: rode `python -m ia.treinar`; por ora valem só as regras de nível")
     log.info("serviço de IA iniciado", extra={"dados": {"intervalo_s": intervalo_s}})
     while True:
         try:
@@ -196,7 +199,7 @@ def rodar_retroativo() -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Serviço de IA do VigIA")
     parser.add_argument("modo", nargs="?", default="tempo-real", choices=["tempo-real", "retroativo"])
-    parser.add_argument("--intervalo", type=float, default=5.0)
+    parser.add_argument("--intervalo", type=float, default=2.0)
     parser.add_argument("--uma-vez", action="store_true")
     args = parser.parse_args()
     if args.modo == "retroativo":

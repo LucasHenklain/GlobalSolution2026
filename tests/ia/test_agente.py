@@ -10,7 +10,14 @@ LIMIARES = {"amarelo": 0.07, "laranja": 0.20, "vermelho": 0.60}
 
 
 def _linha(nivel=50.0, chuva_1h=0.0, **extra) -> dict:
-    return {"nivel_cm": nivel, "chuva_1h": chuva_1h, "chuva_24h": 0.0, "delta_nivel_30min": 0.0, "nivel_pct_cota": nivel / 280 * 100, **extra}
+    return {
+        "nivel_cm": nivel,
+        "chuva_1h": chuva_1h,
+        "chuva_24h": 0.0,
+        "delta_nivel_30min": 0.0,
+        "nivel_pct_cota": nivel / 280 * 100,
+        **extra,
+    }
 
 
 def _serie(niveis, probs, inicio="2025-01-24T18:00:00Z"):

@@ -16,7 +16,7 @@ import atexit
 import base64
 import json
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 import tempfile
 import time
@@ -143,7 +143,7 @@ def abrir_edge(caminho: str, porta: int, visivel: bool) -> subprocess.Popen:
         comando.insert(1, "--headless=new")
     # Variáveis de quem chamou o script (ex.: um app Electron) confundem o Edge; ele recebe um ambiente limpo.
     ambiente = {k: v for k, v in os.environ.items() if not k.startswith(("CHROME_", "CLAUDE", "ELECTRON_"))}
-    edge = subprocess.Popen(comando, env=ambiente, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # noqa: S603
+    edge = subprocess.Popen(comando, env=ambiente, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # noqa: S603 # nosec B603
     atexit.register(lambda: edge.poll() is None and edge.terminate())  # fecha o Edge mesmo se algo falhar no meio
     return edge
 
@@ -152,7 +152,7 @@ def endereco_da_aba(porta: int) -> str:
     """Pergunta ao Edge (só em 127.0.0.1) qual é o WebSocket de depuração da aba do Wokwi."""
     for _ in range(60):
         try:
-            with urllib.request.urlopen(f"http://127.0.0.1:{porta}/json", timeout=2) as resposta:  # noqa: S310
+            with urllib.request.urlopen(f"http://127.0.0.1:{porta}/json", timeout=2) as resposta:  # noqa: S310 # nosec B310
                 for aba in json.load(resposta):
                     if aba.get("type") == "page" and "wokwi" in aba.get("url", ""):
                         return aba["webSocketDebuggerUrl"]
@@ -231,7 +231,7 @@ def main() -> None:
         # rodando em segundo plano e consumindo CPU.
         try:
             pagina.cdp("Browser.close")
-        except Exception:  # noqa: BLE001, S110 - o navegador fecha a conexão ao obedecer; não há o que tratar
+        except Exception:  # noqa: BLE001, S110 - o navegador fecha a conexão ao obedecer; não há o que tratar # nosec B110
             pass
         pagina.fechar()
         edge.terminate()

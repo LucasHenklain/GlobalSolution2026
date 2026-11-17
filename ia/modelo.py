@@ -7,6 +7,7 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
+from threadpoolctl import threadpool_limits
 
 from comum.config import carregar_config
 from ia.dataset import preparar_variaveis
@@ -45,4 +46,7 @@ def prever_probabilidade(fato: pd.DataFrame, pacote: dict | None = None) -> pd.S
     if fato.empty:
         return pd.Series(dtype=float, index=fato.index)
     x = preparar_variaveis(fato)[pacote["variaveis"]]
-    return pd.Series(pacote["modelo"].predict_proba(x)[:, 1], index=fato.index)
+    # Uma thread basta para prever e evita travar quando a máquina (ou o container) está com a CPU disputada.
+    with threadpool_limits(limits=1):
+        prob = pacote["modelo"].predict_proba(x)[:, 1]
+    return pd.Series(prob, index=fato.index)

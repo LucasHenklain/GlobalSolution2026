@@ -2,7 +2,7 @@
 
 Uso (a partir da raiz do repositório):
     python -m dados.pipeline historico              # chuva real do INMET + nível simulado → gold (base de treino da IA)
-    python -m dados.pipeline tempo-real             # laço: micro-lotes do gateway MQTT → gold, a cada 5 s
+    python -m dados.pipeline tempo-real             # laço: micro-lotes do gateway MQTT → gold, a cada 2 s
     python -m dados.pipeline tempo-real --uma-vez   # um ciclo só (útil em testes e na CI)
     python -m dados.pipeline eventos-demo           # recorta temporais reais do histórico para o emulador reproduzir
     python -m dados.pipeline status                 # o que existe em cada camada
@@ -22,6 +22,7 @@ from dados.processamento import bronze, gold, silver
 
 log = obter_logger("dados.pipeline")
 PASTA_EVENTOS = RAIZ / "dados" / "referencia" / "eventos_demo"
+INTERVALO_OCORRENCIAS_S = 15
 
 
 def rodar_historico() -> dict:
@@ -40,10 +41,10 @@ def rodar_historico() -> dict:
     return resumo
 
 
-def ciclo_tempo_real() -> dict:
+def ciclo_tempo_real(buscar_ocorrencias: bool = True) -> dict:
     """Um ciclo: o que o gateway deixou na landing vira bronze, silver e gold. Idempotente."""
     novos = bronze.ingerir_sensores()
-    n_ocorrencias = bronze.ingerir_ocorrencias()
+    n_ocorrencias = bronze.ingerir_ocorrencias() if buscar_ocorrencias else None
     gold.gerar_dim_estacao()
     resumo = {"lotes_novos": len(novos), "ocorrencias": n_ocorrencias}
     tem_bronze = any(camadas.caminho("bronze", "sensores").glob("data=*/*.jsonl"))
@@ -63,9 +64,14 @@ def ciclo_tempo_real() -> dict:
 
 def rodar_tempo_real(intervalo_s: float, uma_vez: bool) -> None:
     log.info("pipeline em tempo real iniciado", extra={"dados": {"intervalo_s": intervalo_s}})
+    ultima_busca = 0.0
     while True:
         try:
-            resumo = ciclo_tempo_real()
+            # Leituras de sensor a cada ciclo; ocorrências do app mudam devagar, basta buscar a cada 15 s.
+            buscar = time.time() - ultima_busca >= INTERVALO_OCORRENCIAS_S
+            if buscar:
+                ultima_busca = time.time()
+            resumo = ciclo_tempo_real(buscar_ocorrencias=buscar)
             if resumo["lotes_novos"]:
                 log.info("ciclo", extra={"dados": resumo})
         except Exception:  # noqa: BLE001 - um ciclo com erro não pode derrubar o serviço; o próximo tenta de novo
@@ -121,7 +127,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="comando", required=True)
     sub.add_parser("historico")
     tempo_real = sub.add_parser("tempo-real")
-    tempo_real.add_argument("--intervalo", type=float, default=5.0)
+    tempo_real.add_argument("--intervalo", type=float, default=2.0)
     tempo_real.add_argument("--uma-vez", action="store_true")
     sub.add_parser("eventos-demo")
     sub.add_parser("status")

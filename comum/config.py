@@ -10,7 +10,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent  # raiz do repositório
 
 # Segredos que só servem para desenvolvimento: em produção o serviço se recusa a subir com eles.
-_TOKEN_DEV = "dev-token-interno"  # noqa: S105 - valor público de desenvolvimento, recusado em prod
+_TOKEN_DEV = "dev-token-interno"  # noqa: S105 - valor público de desenvolvimento, recusado em prod # nosec B105
 
 
 def _caminho(valor: str) -> Path:

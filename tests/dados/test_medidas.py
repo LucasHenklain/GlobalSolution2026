@@ -9,7 +9,9 @@ def _t(texto):
     return pd.Timestamp(texto, tz="UTC")
 
 
-EVENTOS = pd.DataFrame({"estacao_id": ["EST-ARI-01", "EST-PIR-01"], "inicio": [_t("2025-01-24 20:00"), _t("2025-01-24 21:00")]})
+EVENTOS = pd.DataFrame(
+    {"estacao_id": ["EST-ARI-01", "EST-PIR-01"], "inicio": [_t("2025-01-24 20:00"), _t("2025-01-24 21:00")]}
+)
 ALERTAS = pd.DataFrame(
     {
         "estacao_id": ["EST-ARI-01", "EST-ARI-01", "EST-PIR-01"],

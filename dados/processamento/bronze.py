@@ -8,8 +8,9 @@ from pathlib import Path
 import httpx
 import pandas as pd
 
-from comum.config import RAIZ, carregar_config
+from comum.config import RAIZ
 from comum.estacoes import carregar_estacoes
+from comum.http_interno import cliente_do_app
 from comum.log import obter_logger
 from dados import camadas
 from dados.simulacao.hidrologia import simular_estacao
@@ -85,14 +86,8 @@ def ingerir_sensores() -> list[Path]:
 
 def ingerir_ocorrencias() -> int | None:
     """Busca no app as ocorrências relatadas pelos moradores (sem dados pessoais) e guarda o extrato bruto."""
-    cfg = carregar_config()
     try:
-        resposta = httpx.get(
-            f"{cfg.app_url}/api/interno/ocorrencias",
-            params={"desde": "2000-01-01T00:00:00Z"},
-            headers={"X-Token-Interno": cfg.token_interno},
-            timeout=5,
-        )
+        resposta = cliente_do_app().get("/api/interno/ocorrencias", params={"desde": "2000-01-01T00:00:00Z"})
         resposta.raise_for_status()
     except httpx.HTTPError as erro:
         # Sem o app no ar o pipeline segue: os sensores não podem depender do site.

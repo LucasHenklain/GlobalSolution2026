@@ -331,7 +331,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Gateway MQTT do VigIA: valida leituras e grava micro-lotes na landing.")
     ap.add_argument("--broker", default=cfg.mqtt_host)
     ap.add_argument("--porta", type=int, default=cfg.mqtt_port)
-    ap.add_argument("--janela-s", type=float, default=5.0, help="segundos entre um micro-lote e outro")
+    ap.add_argument("--janela-s", type=float, default=2.0, help="segundos entre um micro-lote e outro")
     ap.add_argument("--max-lote", type=int, default=200, help="grava antes da janela se acumular N mensagens")
     ap.add_argument("--duracao-s", type=float, default=None, help="encerra sozinho depois de N segundos")
     ap.add_argument("--log-s", type=float, default=30.0, help="segundos entre os logs de contadores")

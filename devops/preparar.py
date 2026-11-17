@@ -9,7 +9,7 @@ Uso:  python -m devops.preparar          (pula o que já existe; leva ~3 min na 
 from __future__ import annotations
 
 import argparse
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 
@@ -50,7 +50,7 @@ def main() -> None:
     _etapa(
         "4/4 banco do app e usuários de demonstração",
         False,
-        lambda: subprocess.run([sys.executable, "-m", "mvp.web.seed"], check=True),  # noqa: S603 - comando fixo
+        lambda: subprocess.run([sys.executable, "-m", "mvp.web.seed"], check=True),  # noqa: S603 - comando fixo # nosec B603
     )
     log.info("VigIA preparado")
 

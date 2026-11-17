@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import argparse
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -56,7 +56,7 @@ def rodar(nome: str, comando: list[str]) -> tuple[bool, float]:
     """Executa uma etapa, grava a saída completa em arquivo e devolve (passou?, segundos)."""
     inicio = time.time()
     ambiente = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}
-    r = subprocess.run(
+    r = subprocess.run(  # nosec B603
         comando, cwd=RAIZ, capture_output=True, text=True, encoding="utf-8", errors="replace", env=ambiente
     )  # noqa: S603
     duracao = time.time() - inicio
@@ -81,7 +81,7 @@ def main() -> int:
             break  # sem imagem ou sem pilha não adianta seguir
     if args.com_docker and not args.manter_pilha:
         rodar("12_docker_down", ["docker", "compose", "down"])
-    commit = subprocess.run(
+    commit = subprocess.run(  # nosec B603 B607
         ["git", "rev-parse", "--short", "HEAD"], cwd=RAIZ, capture_output=True, text=True
     ).stdout.strip()  # noqa: S603, S607
     linhas = [
