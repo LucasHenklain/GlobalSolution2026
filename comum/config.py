@@ -24,6 +24,7 @@ class Config:
     ambiente: str
     lake: Path
     db: Path
+    modelos: Path  # onde ficam o modelo treinado e as métricas da IA
     secret_key: str
     chave_dados: str  # chave Fernet (base64) para cifrar o telefone; vazia = gerar e guardar em var/
     token_interno: str
@@ -44,6 +45,7 @@ def carregar_config() -> Config:
         ambiente=ambiente,
         lake=_caminho(os.environ.get("VIGIA_LAKE", "dados/lake")),
         db=_caminho(os.environ.get("VIGIA_DB", "var/vigia.db")),
+        modelos=_caminho(os.environ.get("VIGIA_MODELOS", "ia/modelos")),
         secret_key=os.environ.get("VIGIA_SECRET_KEY", ""),
         chave_dados=os.environ.get("VIGIA_CHAVE_DADOS", ""),
         token_interno=os.environ.get("VIGIA_TOKEN_INTERNO", _TOKEN_DEV),
@@ -65,8 +67,12 @@ def carregar_config() -> Config:
 
 
 def segredo_local(nome: str, gerador=lambda: secrets.token_urlsafe(48)) -> str:
-    """Em dev/teste, gera um segredo na primeira execução e guarda em var/ (fora do Git) para as sessões sobreviverem a reinícios."""
-    arquivo = RAIZ / "var" / f"{nome}.key"
+    """Em dev/teste, gera um segredo na primeira execução e guarda ao lado do banco (fora do Git).
+
+    Fica junto do banco de propósito: a chave que cifra os telefones precisa sobreviver junto com eles
+    (no Docker, os dois moram no mesmo volume).
+    """
+    arquivo = carregar_config().db.parent / f"{nome}.key"
     if arquivo.exists():
         return arquivo.read_text(encoding="utf-8").strip()
     arquivo.parent.mkdir(parents=True, exist_ok=True)

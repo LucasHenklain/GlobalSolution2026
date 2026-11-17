@@ -41,7 +41,7 @@ BACIAS = {
 
 
 def desagregar_chuva_horaria(chuva_h: np.ndarray, rng: np.random.Generator) -> np.ndarray:
-    """Divide cada total horário em 6 janelas de 10 min com pesos aleatórios concentrados (chuva de verão vem em pancadas)."""
+    """Divide cada total horário em 6 janelas de 10 min, com pesos aleatórios (chuva de verão vem em pancadas)."""
     pesos = rng.gamma(shape=1.0, scale=1.0, size=(len(chuva_h), PASSOS_POR_HORA))
     pesos /= pesos.sum(axis=1, keepdims=True)
     return (pesos * chuva_h[:, None]).reshape(-1)

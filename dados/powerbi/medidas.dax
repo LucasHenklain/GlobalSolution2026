@@ -1,0 +1,78 @@
+// VigIA — medidas DAX equivalentes às funções de dados/medidas.py
+// Opcional: o painel oficial do projeto é o Streamlit (dados/dashboard/app.py), que aplica as mesmas fórmulas em Python.
+// Para usar no Power BI: importe os Parquet de dados/lake/gold (fato_leitura, fato_evento, fato_alerta,
+// fato_risco, fato_ocorrencia, dim_estacao), relacione todos por estacao_id com dim_estacao e cole as medidas.
+
+Chuva Acumulada (mm) =
+AVERAGEX ( VALUES ( dim_estacao[estacao_id] ), CALCULATE ( SUM ( fato_leitura[chuva_mm] ) ) )
+
+Nível Máximo (% da cota) =
+MAX ( fato_leitura[nivel_pct_cota] )
+
+Horas em Alerta =
+DIVIDE (
+    COUNTROWS ( FILTER ( fato_leitura, fato_leitura[estado_regra] IN { "alerta", "transbordo" } ) ) * 10,
+    60
+)
+
+Eventos de Transbordo =
+COUNTROWS ( fato_evento )
+
+Alertas Emitidos =
+CALCULATE ( COUNTROWS ( fato_alerta ), fato_alerta[nivel_risco] IN { "laranja", "vermelho" } )
+
+// Coluna calculada em fato_evento: minutos entre o primeiro alerta (até 3 h antes) e o início do transbordo
+Antecedência (min) =
+VAR inicio = fato_evento[inicio]
+VAR estacao = fato_evento[estacao_id]
+VAR primeiro_alerta =
+    CALCULATE (
+        MIN ( fato_alerta[emitido_em] ),
+        FILTER (
+            ALL ( fato_alerta ),
+            fato_alerta[estacao_id] = estacao
+                && fato_alerta[nivel_risco] IN { "laranja", "vermelho" }
+                && fato_alerta[emitido_em] < inicio
+                && fato_alerta[emitido_em] >= inicio - TIME ( 3, 0, 0 )
+        )
+    )
+RETURN
+    IF ( ISBLANK ( primeiro_alerta ), 0, DATEDIFF ( primeiro_alerta, inicio, MINUTE ) )
+
+Antecedência Mediana (min) =
+MEDIAN ( fato_evento[Antecedência (min)] )
+
+% Eventos Avisados (30+ min) =
+DIVIDE (
+    COUNTROWS ( FILTER ( fato_evento, fato_evento[Antecedência (min)] >= 30 ) ),
+    COUNTROWS ( fato_evento )
+)
+
+Disponibilidade dos Sensores (%) =
+VAR janelas_esperadas =
+    SUMX (
+        VALUES ( dim_estacao[estacao_id] ),
+        CALCULATE ( DATEDIFF ( MIN ( fato_leitura[medido_em] ), MAX ( fato_leitura[medido_em] ), MINUTE ) / 10 + 1 )
+    )
+RETURN
+    DIVIDE ( COUNTROWS ( fato_leitura ), janelas_esperadas )
+
+Ocorrências Abertas =
+CALCULATE ( COUNTROWS ( fato_ocorrencia ), fato_ocorrencia[status] <> "resolvida" )
+
+Prob. Máxima da IA =
+MAX ( fato_risco[prob_transbordo_60min] )
+
+Índice de Prioridade =
+60 * [Prob. Máxima da IA]
+    + 0.30 * MIN ( [Nível Máximo (% da cota)], 100 )
+    + 2 * MIN ( [Ocorrências Abertas], 5 )
+
+// Comparação com o período anterior de mesmo tamanho (exige uma dim_data marcada como tabela de datas)
+Chuva Período Anterior (mm) =
+VAR dias = DATEDIFF ( MIN ( dim_data[data] ), MAX ( dim_data[data] ), DAY ) + 1
+RETURN
+    CALCULATE ( [Chuva Acumulada (mm)], DATEADD ( dim_data[data], -dias, DAY ) )
+
+Variação da Chuva (%) =
+DIVIDE ( [Chuva Acumulada (mm)] - [Chuva Período Anterior (mm)], [Chuva Período Anterior (mm)] )

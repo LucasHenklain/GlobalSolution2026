@@ -1,0 +1,102 @@
+# VigIA — sobe a solução inteira com:  docker compose up --build
+#   App do morador ......... http://localhost:8000
+#   Painel da Defesa Civil . http://localhost:8501
+# Portas ocupadas na sua máquina? Copie .env.example para .env e troque VIGIA_PORTA_*.
+
+x-vigia: &vigia
+  build: .
+  image: vigia:latest
+  environment: &ambiente
+    VIGIA_AMBIENTE: ${VIGIA_AMBIENTE:-dev}
+    VIGIA_TOKEN_INTERNO: ${VIGIA_TOKEN_INTERNO:-dev-token-interno}
+    VIGIA_SECRET_KEY: ${VIGIA_SECRET_KEY:-}
+    VIGIA_CHAVE_DADOS: ${VIGIA_CHAVE_DADOS:-}
+    VIGIA_APP_URL: http://app:8000
+    MQTT_HOST: mosquitto
+    MQTT_PORT: "1883"
+  volumes:
+    - vigia_dados:/dados_vigia        # data lake, banco do app e modelo treinado (sobrevivem a reinícios)
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: {max-size: "5m", max-file: "3"}
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    volumes:
+      - ./devops/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    ports:
+      - "${VIGIA_PORTA_MQTT:-1883}:1883"
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/broker/uptime' -C 1 -W 3 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Roda uma vez: constrói o histórico do data lake, treina a IA e cria os usuários de demonstração.
+  preparo:
+    <<: *vigia
+    command: ["python", "-m", "devops.preparar"]
+    restart: "no"
+
+  app:
+    <<: *vigia
+    command: ["python", "-m", "uvicorn", "mvp.web.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      preparo: {condition: service_completed_successfully}
+      mosquitto: {condition: service_healthy}
+    ports:
+      - "${VIGIA_PORTA_APP:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  gateway:
+    <<: *vigia
+    command: ["python", "-m", "dados.ingestao.gateway_mqtt"]
+    depends_on:
+      preparo: {condition: service_completed_successfully}
+      mosquitto: {condition: service_healthy}
+
+  pipeline:
+    <<: *vigia
+    command: ["python", "-m", "dados.pipeline", "tempo-real"]
+    depends_on:
+      app: {condition: service_healthy}
+
+  ia:
+    <<: *vigia
+    command: ["python", "-m", "ia.servico"]
+    depends_on:
+      app: {condition: service_healthy}
+
+  dashboard:
+    <<: *vigia
+    command: ["python", "-m", "streamlit", "run", "dados/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true", "--browser.gatherUsageStats", "false"]
+    depends_on:
+      preparo: {condition: service_completed_successfully}
+    ports:
+      - "${VIGIA_PORTA_DASHBOARD:-8501}:8501"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  # Estações simuladas: reproduz o temporal real de 24/01/2025 (chuva INMET) em ritmo acelerado e encerra.
+  # Para repetir:  docker compose run --rm emulador
+  emulador:
+    <<: *vigia
+    command: ["python", "-m", "mvp.iot.emulador", "--modo", "replay", "--evento", "dados/referencia/eventos_demo/temporal_2025-01-24.csv", "--velocidade", "0.5"]
+    depends_on:
+      gateway: {condition: service_started}
+      pipeline: {condition: service_started}
+      ia: {condition: service_started}
+    restart: "no"
+
+volumes:
+  vigia_dados:

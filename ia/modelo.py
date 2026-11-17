@@ -8,11 +8,17 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-from comum.config import RAIZ
+from comum.config import carregar_config
 from ia.dataset import preparar_variaveis
 
-PASTA_MODELOS = RAIZ / "ia" / "modelos"
-ARQUIVO_MODELO = PASTA_MODELOS / "modelo_transbordo.joblib"
+
+def pasta_modelos() -> Path:
+    """Pasta do modelo e das métricas (ia/modelos, ou VIGIA_MODELOS no Docker)."""
+    return carregar_config().modelos
+
+
+def arquivo_modelo() -> Path:
+    return pasta_modelos() / "modelo_transbordo.joblib"
 
 
 class ModeloAusenteError(RuntimeError):
@@ -25,8 +31,9 @@ def _carregar(caminho: str, _modificado_em: float) -> dict:
     return joblib.load(caminho)
 
 
-def carregar_pacote(arquivo: Path = ARQUIVO_MODELO) -> dict:
+def carregar_pacote(arquivo: Path | None = None) -> dict:
     """Devolve {'modelo', 'variaveis', 'limiares', ...}. Recarrega sozinho se o arquivo for retreinado."""
+    arquivo = arquivo or arquivo_modelo()
     if not arquivo.exists():
         raise ModeloAusenteError(f"modelo não encontrado em {arquivo}; rode `python -m ia.treinar`")
     return _carregar(str(arquivo), arquivo.stat().st_mtime)

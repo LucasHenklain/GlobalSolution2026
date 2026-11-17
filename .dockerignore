@@ -1,0 +1,15 @@
+.git
+.github
+**/__pycache__
+.pytest_cache
+.ruff_cache
+var
+dados/lake
+ia/modelos/*.joblib
+referencias
+docs
+entrega
+tests
+**/_work
+*.md
+!README.md

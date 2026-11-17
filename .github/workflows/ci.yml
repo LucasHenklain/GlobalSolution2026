@@ -1,0 +1,82 @@
+# Pipeline de integração e entrega contínuas do VigIA.
+# Um push dispara, sem passo manual: qualidade → testes → segurança → build da imagem → teste da pilha inteira → publicação.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Lint, segurança e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Instalar dependências
+        run: pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: python -m ruff check .
+      - name: Análise estática de segurança (bandit)
+        run: python -m bandit -q -c pyproject.toml -r comum dados ia mvp devops
+      - name: Vulnerabilidades em dependências (pip-audit)
+        run: python -m pip_audit -r requirements.txt
+      - name: Testes automatizados com cobertura
+        run: python -m pytest --cov=comum --cov=dados --cov=ia --cov=mvp --cov-report=term --cov-report=xml --junitxml=relatorio-testes.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorios-de-teste
+          path: |
+            relatorio-testes.xml
+            coverage.xml
+
+  pilha:
+    name: Build da imagem e teste da pilha (docker compose)
+    needs: qualidade
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem
+        run: docker compose build
+      - name: Subir a solução inteira
+        run: docker compose up -d --wait --wait-timeout 600 mosquitto app gateway pipeline ia dashboard
+      - name: Teste de fumaça de ponta a ponta (sensor → pipeline → IA → app)
+        run: |
+          docker compose run --rm emulador python -m mvp.iot.emulador --modo replay --evento dados/referencia/eventos_demo/temporal_2025-01-24.csv --velocidade 4
+          docker compose exec -T app python -m devops.verificar_pilha --app http://localhost:8000 --dashboard http://dashboard:8501 --esperar-alerta 120
+      - name: Logs dos serviços
+        if: always()
+        run: docker compose logs --no-color --tail 80
+      - name: Derrubar
+        if: always()
+        run: docker compose down -v
+
+  publicar:
+    name: Publicar imagem (entrega contínua)
+    needs: pilha
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build e push para o GitHub Container Registry
+        run: |
+          IMAGEM=ghcr.io/${GITHUB_REPOSITORY,,}/vigia
+          docker build -t "$IMAGEM:${GITHUB_SHA::7}" -t "$IMAGEM:latest" .
+          docker push "$IMAGEM:${GITHUB_SHA::7}"
+          docker push "$IMAGEM:latest"

@@ -25,14 +25,14 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from comum.log import obter_logger
 from dados import camadas
 from ia import avaliacao, dataset
-from ia.modelo import ARQUIVO_MODELO, PASTA_MODELOS
+from ia.modelo import arquivo_modelo, pasta_modelos
 
 log = obter_logger("ia.treinar")
 LIMIAR_VERMELHO = 0.60  # "muito provável": usado para o nível vermelho antes de a água passar da cota
 
 
 def treinar_modelo(treino: pd.DataFrame) -> HistGradientBoostingClassifier:
-    """Gradient boosting de árvores (scikit-learn): lida bem com relações não lineares entre chuva, nível e ritmo de subida."""
+    """Gradient boosting de árvores (scikit-learn): capta relações não lineares entre chuva, nível e ritmo de subida."""
     amostra = dataset.amostra_de_treino(treino)
     modelo = HistGradientBoostingClassifier(
         max_iter=300, learning_rate=0.06, max_leaf_nodes=15, l2_regularization=1.0, random_state=42
@@ -143,7 +143,7 @@ def _graficos(metricas: dict, importancia: dict) -> None:
         eixo.spines[["top", "right"]].set_visible(False)
     fig.suptitle("VigIA — previsão de transbordo: antes × depois (teste 2024–2025, dados nunca vistos)", fontsize=11)
     fig.tight_layout()
-    fig.savefig(PASTA_MODELOS / "avaliacao_antes_depois.png", dpi=150)
+    fig.savefig(pasta_modelos() / "avaliacao_antes_depois.png", dpi=150)
     plt.close(fig)
 
     fig, eixo = plt.subplots(figsize=(7, 3.6))
@@ -152,7 +152,7 @@ def _graficos(metricas: dict, importancia: dict) -> None:
     eixo.set_title("No que a IA presta atenção (importância por permutação)", fontsize=11)
     eixo.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-    fig.savefig(PASTA_MODELOS / "importancia_variaveis.png", dpi=150)
+    fig.savefig(pasta_modelos() / "importancia_variaveis.png", dpi=150)
     plt.close(fig)
 
 
@@ -169,7 +169,7 @@ def main() -> dict:
     importancia = importancia_das_variaveis(modelo, validacao)
 
     limiares = {"amarelo": round(limiar / 3, 3), "laranja": limiar, "vermelho": max(LIMIAR_VERMELHO, limiar)}
-    PASTA_MODELOS.mkdir(parents=True, exist_ok=True)
+    pasta_modelos().mkdir(parents=True, exist_ok=True)
     joblib.dump(
         {
             "modelo": modelo,
@@ -178,7 +178,7 @@ def main() -> dict:
             "treinado_em": camadas.agora_iso(),
             "sklearn": sklearn.__version__,
         },
-        ARQUIVO_MODELO,
+        arquivo_modelo(),
     )
     relatorio = {
         "treinado_em": camadas.agora_iso(),
@@ -198,9 +198,11 @@ def main() -> dict:
         "curva_validacao": curva,
         "segundos": round(time.time() - inicio, 1),
     }
-    (PASTA_MODELOS / "metricas.json").write_text(json.dumps(relatorio, ensure_ascii=False, indent=2), encoding="utf-8")
+    (pasta_modelos() / "metricas.json").write_text(
+        json.dumps(relatorio, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     q = metricas["qualidade_da_probabilidade"]
-    (PASTA_MODELOS / "relatorio_avaliacao.md").write_text(
+    (pasta_modelos() / "relatorio_avaliacao.md").write_text(
         "# Avaliação da IA — previsão de transbordo em 60 min\n\n"
         f"Treino 2019–2022 · validação 2023 · **teste 2024–2025** (dados que o modelo nunca viu). "
         f"Limiar de alerta escolhido na validação: **{limiar:.2f}**.\n\n"
