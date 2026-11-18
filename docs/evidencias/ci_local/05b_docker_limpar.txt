@@ -4,4 +4,4 @@ $ docker compose down -v --remove-orphans
  Volume gs2026_citizentech_vigia_dados  Removing
  Volume gs2026_citizentech_vigia_dados  Removed
 
-[código de saída 0 em 5.2 s]
+[código de saída 0 em 4.6 s]

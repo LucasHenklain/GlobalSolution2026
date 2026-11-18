@@ -7,4 +7,4 @@ $ docker compose exec -T app python -m devops.verificar_pilha --app http://local
 [OK] fluxo de ponta a ponta: 12 alerta(s) da IA chegaram ao app
 
 
-[código de saída 0 em 11.0 s]
+[código de saída 0 em 10.1 s]

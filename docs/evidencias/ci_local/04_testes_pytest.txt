@@ -1,4 +1,4 @@
-$ ~\AppData\Local\Temp\vigia_venv\Scripts\python.exe -m pytest --cov=comum --cov=dados --cov=ia --cov=mvp --cov-report=term -v --junitxml=.\docs\evidencias\ci_local\relatorio-testes.xml
+$ python -m pytest --cov=comum --cov=dados --cov=ia --cov=mvp --cov-report=term -v --junitxml=.\docs\evidencias\ci_local\relatorio-testes.xml
 
 ============================= test session starts =============================
 platform win32 -- Python 3.13.1, pytest-9.0.3, pluggy-1.7.0
@@ -6,20 +6,21 @@ rootdir: .
 configfile: pyproject.toml
 testpaths: tests
 plugins: anyio-4.16.0, platformdirs-4.14.7, cov-7.1.0
-collected 154 items
+collected 158 items
 
 tests\dados\test_dashboard.py ..                                         [  1%]
 tests\dados\test_features.py ......                                      [  5%]
 tests\dados\test_medidas.py .....                                        [  8%]
 tests\dados\test_silver.py .......                                       [ 12%]
-tests\ia\test_agente.py ............                                     [ 20%]
-tests\ia\test_avaliacao.py .....                                         [ 24%]
-tests\integracao\test_fluxo_completo.py ..                               [ 25%]
-tests\iot\test_iot_emulador.py ...........................               [ 42%]
-tests\iot\test_iot_firmware.py ........                                  [ 48%]
-tests\iot\test_iot_gateway.py .................................          [ 69%]
+tests\devops\test_fechamento.py ....                                     [ 15%]
+tests\ia\test_agente.py ............                                     [ 22%]
+tests\ia\test_avaliacao.py .....                                         [ 25%]
+tests\integracao\test_fluxo_completo.py ..                               [ 27%]
+tests\iot\test_iot_emulador.py ...........................               [ 44%]
+tests\iot\test_iot_firmware.py ........                                  [ 49%]
+tests\iot\test_iot_gateway.py .................................          [ 70%]
 tests\web\test_web_conta.py ...............                              [ 79%]
-tests\web\test_web_interno.py ..........                                 [ 85%]
+tests\web\test_web_interno.py ..........                                 [ 86%]
 tests\web\test_web_telas.py ...............                              [ 95%]
 tests\web\test_web_unidades.py .......                                   [100%]
 
@@ -90,7 +91,7 @@ mvp\web\seguranca.py                    86      5    94%
 mvp\web\validacao.py                    71      4    94%
 --------------------------------------------------------
 TOTAL                                 3138    696    78%
-================= 154 passed, 1 warning in 141.45s (0:02:21) ==================
+================= 158 passed, 1 warning in 391.79s (0:06:31) ==================
 
 
-[código de saída 0 em 155.2 s]
+[código de saída 0 em 505.1 s]
