@@ -31,9 +31,12 @@ ETAPAS = [
          f"--junitxml={SAIDA / 'relatorio-testes.xml'}"],
     ),
 ]  # fmt: skip
+# Rede com inspeção TLS: aponte VIGIA_CA_EXTRA para a cadeia de certificados da empresa (opcional).
+CA_EXTRA = os.environ.get("VIGIA_CA_EXTRA", "")
+SEGREDO_CA = ["--secret", f"id=ca_extra,src={CA_EXTRA}"] if CA_EXTRA else []
 SERVICOS = ["mosquitto", "app", "gateway", "pipeline", "ia", "dashboard"]
 ETAPAS_DOCKER = [
-    ("05_docker_build", ["docker", "compose", "build"]),
+    ("05_docker_build", ["docker", "build", "-t", "vigia:latest", *SEGREDO_CA, "."]),
     ("06_docker_up", ["docker", "compose", "up", "-d", "--wait", "--wait-timeout", "900", *SERVICOS]),
     ("07_docker_ps", ["docker", "compose", "ps"]),
     (

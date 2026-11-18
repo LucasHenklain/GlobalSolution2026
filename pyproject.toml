@@ -18,6 +18,7 @@ ignore = ["S101"]  # assert e normal em testes
 "dados/dashboard/app.py" = ["E501"]  # configuracao de graficos e tabelas fica mais legivel em uma linha
 "devops/ci_local.py" = ["S603", "S607", "E501"]  # executa comandos fixos (ruff, pytest, docker), sem entrada externa
 "devops/preparar.py" = ["S603"]
+"devops/demo.py" = ["S603", "E501"]  # inicia os servicos locais com comandos fixos
 "ia/mensagens.py" = ["E501"]  # textos dos alertas: uma frase por linha
 
 [tool.pytest.ini_options]
