@@ -62,6 +62,7 @@ def limpar_registro(texto: str) -> str:
     """Tira do registro o que é da máquina e não do projeto: pasta do usuário, IP externo, caminho de certificado."""
     casa = str(Path.home())
     texto = re.sub(r"src=\S+\.pem", "src=<cadeia-de-certificados>.pem", texto)
+    texto = texto.replace(f"$ {PY} ", "$ python ")  # o caminho do interpretador não interessa a quem lê
     # A raiz do projeto vira "." e a pasta do usuário vira "~" (a raiz primeiro, porque fica dentro da pasta do usuário).
     for trecho, troca in ((str(RAIZ), "."), (casa, "~"), (casa.replace("\\", "/"), "~")):
         texto = texto.replace(trecho, troca)

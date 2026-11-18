@@ -29,7 +29,7 @@ O PDF com a solução, a arquitetura e as evidências de cada área está em [`V
 - **Dado real:** mais de 8,9 milhões de brasileiros vivem em áreas de risco em 1.942 municípios; de 1991 a 2022 foram
   3.890 mortes e 8,2 milhões de desalojados ou desabrigados por inundações, enxurradas e deslizamentos
   (nota técnica da Casa Civil, divulgada pela [Agência Brasil em maio/2024](https://agenciabrasil.ebc.com.br/geral/noticia/2024-05/brasil-tem-1942-cidades-com-risco-de-desastre-ambiental)).
-  Aviso antecipado reduz danos em até 30% (Global Commission on Adaptation, citada pela OMM).
+  Aviso com 24 horas de antecedência reduz os danos em até 30% (Global Commission on Adaptation, citada pela OMM).
 - **ODS:** 11.5 (reduzir mortes e afetados por desastres), 13.1 (resiliência a riscos climáticos), 3.d (alerta precoce de
   riscos à saúde), 10.2 (inclusão: funciona para quem tem celular simples), 9.c (acesso à tecnologia da informação).
 
@@ -48,7 +48,7 @@ risco e alertas ao *gold*, ao app e à sirene; as ocorrências relatadas pelos m
 |---|---|---|
 | [`ia/`](ia) | 1 · IA e automação | modelo de previsão (`treinar.py`), avaliação antes × depois (`avaliacao.py`), agente de alerta por regras (`agente.py`), mensagens (`mensagens.py`), serviço em tempo real (`servico.py`) |
 | [`dados/`](dados) | 2 · Big data e visualização | contrato de dados, gateway MQTT, data lake bronze/silver/gold, medidas estilo DAX (`medidas.py`), dashboard Streamlit |
-| [`mvp/`](mvp) | 3 · MVP, IoT e experiência digital | `web/` app FastAPI (10+ telas), `iot/` firmware ESP32 para Wokwi e emulador de estações |
+| [`mvp/`](mvp) | 3 · MVP, IoT e experiência digital | `web/` app FastAPI (12 telas), `iot/` firmware ESP32 para Wokwi e emulador de estações |
 | [`devops/`](devops) | 4 · DevOps, segurança e qualidade | Docker, CI local, monitoramento, teste de fumaça, plano de testes |
 | `comum/` · `tests/` · `docs/` | apoio | configuração e log · testes automatizados · PDF, diagramas, evidências, guias |
 
@@ -83,7 +83,8 @@ python -m devops.demo
 
 Nos dois casos: app do morador em <http://localhost:8000>, painel da Defesa Civil em <http://localhost:8501>
 (escolha a fonte **"Sensores ao vivo"**). As estações simuladas reproduzem, acelerado, o temporal real de 24/01/2025:
-em cerca de 2 minutos o app mostra o risco subindo, o alerta da IA, o SMS na fila e a sirene acionada.
+em cerca de 2 minutos de reprodução o app mostra o risco subindo, o alerta da IA, o SMS na fila e a sirene acionada (na simulação, o córrego transborda uma hora depois do aviso).
+Na primeira vez o Docker leva alguns minutos antes disso: o serviço `preparo` monta o histórico e treina a IA. O emulador roda uma vez e encerra; para repetir, `docker compose run --rm emulador`.
 Portas ocupadas? Copie `.env.example` para `.env` e troque as portas (Docker) ou use
 `python -m devops.demo --porta-app 8010 --porta-painel 8511`.
 
@@ -171,14 +172,15 @@ Os registros ficam em `docs/evidencias/ci_local/`.
   quando avisar, quando lembrar, quando não repetir, quando normalizar, e aciona SMS e sirene.
 - **Ganho medido** (teste 2024–2025, dados que o modelo nunca viu; 38 transbordos):
 
-| Indicador | Antes: regra de limiar fixo | Depois: IA |
-|---|---:|---:|
-| Eventos avisados com 30 min ou mais | 23,7 % | **78,9 %** |
-| Antecedência mediana do alerta | 10 min | **40 min** |
-| Alarmes falsos no período | 61 | **41** |
-| F1 por janela de 10 min | 0,28 | **0,57** |
+| Indicador | Antes: regra de limiar fixo | Depois: modelo de IA | Implantado: IA + regra |
+|---|---:|---:|---:|
+| Eventos avisados com 30 min ou mais | 23,7 % | **78,9 %** | 84,2 % |
+| Antecedência mediana do alerta | 10 min | **40 min** | 40 min |
+| Alarmes falsos no período | 61 | **41** | 78 |
+| F1 por janela de 10 min | 0,28 | **0,57** | 0,41 |
 
-  Tabela completa (incluindo a política implantada "IA + regra") em `ia/modelos/relatorio_avaliacao.md`.
+  O protótipo roda a coluna "Implantado": a regra de nível fica como rede de segurança, o que avisa 100% dos eventos
+  ao custo de mais alarmes falsos. Tabela completa em `ia/modelos/relatorio_avaliacao.md`.
 
 ### Área 2 — Big data e visualização
 - **Camadas:** landing → bronze (bruto imutável com manifesto) → silver (contrato YAML, tipos, sem duplicata;
@@ -228,8 +230,8 @@ Os registros ficam em `docs/evidencias/ci_local/`.
 
 Em tempo de execução **não há IA generativa**: a previsão é um modelo de machine learning treinado pela equipe
 (scikit-learn) e as mensagens dos alertas são textos fixos revisáveis. O guia
-[`docs/COMO_EXPLICAR.md`](docs/COMO_EXPLICAR.md) resume, área por área, como o código funciona — a equipe o usou para
-revisar e entender tudo o que está sendo entregue.
+[`docs/COMO_EXPLICAR.md`](docs/COMO_EXPLICAR.md) resume, área por área, como o código funciona: é o roteiro de revisão
+da equipe para entender e conseguir explicar tudo o que está sendo entregue.
 
 **Reaproveitamento interno (com crédito):** a ideia de contratos de dados, o gateway MQTT, o firmware ESP32 no Wokwi,
 o script de captura da simulação e o montador de vídeo foram adaptados de trabalhos anteriores da própria equipe

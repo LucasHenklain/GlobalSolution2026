@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from docs.pdf.gerar_pdf import bloco, esc, figura, git, ler, markdown_simples, metricas, rubrica, tabela
+from docs.pdf.gerar_pdf import bloco, br, esc, figura, git, ler, markdown_simples, metricas, rubrica, tabela
 
 EQUIPE = [
     ("Lucas Dalmas Batista e Souza", "RM551178"),
@@ -45,6 +45,7 @@ def capa() -> str:
 def resumo() -> str:
     m = metricas().get("teste", {})
     a, d = m.get("antes_regra_limiar_fixo", {}), m.get("depois_ia", {})
+    i = m.get("implantado_ia_mais_regra", {})
     return f"""
 <section>
 <h1>1. Resumo: o que estamos entregando</h1>
@@ -53,12 +54,15 @@ def resumo() -> str:
 transbordo na próxima hora; um agente de regras decide o alerta e o envia ao app, por SMS e à sirene; o morador relata
 ocorrências; a Defesa Civil prioriza pelo painel.</p>
 <div class="kpis">
-  <div class="kpi"><div class="a">Eventos avisados com 30 min ou mais</div><div class="v">{d.get("avisados_30min_pct", "?")}%</div><div class="r">antes: {a.get("avisados_30min_pct", "?")}%</div></div>
+  <div class="kpi"><div class="a">Eventos avisados com 30 min ou mais</div><div class="v">{br(d.get("avisados_30min_pct", "?"))}%</div><div class="r">antes: {br(a.get("avisados_30min_pct", "?"))}%</div></div>
   <div class="kpi"><div class="a">Antecedência mediana do alerta</div><div class="v">{d.get("antecedencia_mediana_min", 0):.0f} min</div><div class="r">antes: {a.get("antecedencia_mediana_min", 0):.0f} min</div></div>
   <div class="kpi"><div class="a">Alarmes falsos no teste</div><div class="v">{d.get("alarmes_falsos", "?")}</div><div class="r">antes: {a.get("alarmes_falsos", "?")}</div></div>
-  <div class="kpi"><div class="a">F1 por janela de 10 min</div><div class="v">{d.get("f1", 0):.2f}</div><div class="r">antes: {a.get("f1", 0):.2f}</div></div>
+  <div class="kpi"><div class="a">F1 por janela de 10 min</div><div class="v">{br(round(d.get("f1", 0), 2))}</div><div class="r">antes: {br(round(a.get("f1", 0), 2))}</div></div>
 </div>
-<p class="pequeno">"Antes" = regra de limiar fixo (alerta quando o nível passa da cota). "Depois" = IA. Teste com dados de 2024–2025
+<p class="pequeno"><b>Política implantada no protótipo (IA + regra de nível como rede de segurança):</b>
+{br(i.get("avisados_30min_pct", "?"))}% dos eventos avisados com 30 min ou mais, mediana de {i.get("antecedencia_mediana_min", 0):.0f} min,
+100% dos eventos avisados antes — ao custo de {i.get("alarmes_falsos", "?")} alarmes falsos no período (a regra sozinha gera {a.get("alarmes_falsos", "?")}).</p>
+<p class="pequeno">"Antes" = regra de limiar fixo (alerta quando o nível passa da cota). "Depois" = modelo de IA sozinho. Teste com dados de 2024–2025
 que o modelo nunca viu ({a.get("eventos", "?")} transbordos). Chuva real do INMET; nível dos córregos simulado.</p>
 <h2>Onde está cada item da rubrica</h2>
 {tabela(["Área", "Critério", "Onde ver neste PDF", "Onde está no projeto"], [
@@ -80,7 +84,8 @@ que o modelo nunca viu ({a.get("eventos", "?")} transbordos). Chuva real do INME
     ["4 · DevOps", "Plano com 5+ casos e evidência (1)", "seção 9.4", "<code>devops/qualidade/PLANO_DE_TESTES.md</code>, <code>tests/</code>"],
 ])}
 <div class="aviso"><b>Transparência.</b> A chuva é medição real do INMET. O nível dos córregos, as 4 estações e o número de moradores
-por área são simulados e isso está dito em cada tela e em cada tabela. Os números da IA valem para esse cenário simulado.
+por área são simulados e isso está dito em cada tela e em cada tabela. A chuva de 10 em 10 minutos é o total horário do INMET
+repartido dentro da hora pela simulação. Os números da IA valem para esse cenário simulado.
 O pipeline rodou no GitHub Actions e localmente; as duas evidências estão na seção 9.2.</div>
 </section>"""
 
@@ -210,13 +215,13 @@ def area_ia() -> str:
     ]
     comparacao = tabela(
         ["Indicador", "Antes: regra de limiar fixo", "Depois: IA", "Implantado: IA + regra"],
-        [[r, f"{a.get(k, '?')}{u}", f"<b>{d.get(k, '?')}{u}</b>", f"{i.get(k, '?')}{u}"] for r, k, u in linhas],
+        [[r, f"{br(a.get(k, '?'))}{u}", f"<b>{br(d.get(k, '?'))}{u}</b>", f"{br(i.get(k, '?'))}{u}"] for r, k, u in linhas],
         numericas=(1, 2, 3),
     )
     por_estacao = tabela(
         ["Estação", "Transbordos", "Avisados 30+ min: antes → depois", "Antecedência mediana: antes → depois", "Alarmes falsos: antes → depois"],
         [
-            [e, v["antes"]["eventos"], f"{v['antes']['avisados_30min_pct']}% → <b>{v['depois']['avisados_30min_pct']}%</b>",
+            [e, v["antes"]["eventos"], f"{br(v['antes']['avisados_30min_pct'])}% → <b>{br(v['depois']['avisados_30min_pct'])}%</b>",
              f"{v['antes']['antecedencia_mediana_min']:.0f} → <b>{v['depois']['antecedencia_mediana_min']:.0f} min</b>",
              f"{v['antes']['alarmes_falsos']} → <b>{v['depois']['alarmes_falsos']}</b>"]
             for e, v in t.get("por_estacao", {}).items()
@@ -230,16 +235,16 @@ def area_ia() -> str:
 {rubrica("<b>IA aplicada (1,5 pt):</b> funcionalidade de IA implementada que resolve parte do problema.")}
 <p><b>O que a IA faz:</b> a cada janela de 10 minutos, para cada estação, estima a <b>probabilidade de o córrego transbordar nos
 próximos 60 minutos</b>. É a parte do problema que a regra de nível não resolve: quando o nível passa da cota, já é tarde.
-A IA olha a chuva que acabou de cair e o ritmo de subida e avisa enquanto o córrego ainda está baixo.</p>
+A IA olha principalmente a chuva que acabou de cair e avisa enquanto o córrego ainda está baixo.</p>
 {tabela(["Item", "Descrição"], [
     ["Algoritmo", f"{esc(m.get('algoritmo', ''))} — árvores de decisão em sequência; capta relações não lineares (chuva forte com solo encharcado escoa muito mais)"],
     ["Alvo", "1 se o nível atinge a cota de transbordo em alguma das 6 janelas seguintes; 0 caso contrário"],
     ["Entradas (11)", "nível em % da cota; subida em 10 e 30 min; projeção do nível em 30 min; chuva na janela, em 30 min, 1 h, 3 h, 24 h e 72 h; código da estação"],
     ["Dados", f"gold do pipeline: 1,47 milhão de janelas (4 estações, 2019–2025). Treino {m.get('dados', {}).get('treino', '')}; validação 2023; teste 2024–2025"],
     ["Separação", "por tempo, e não ao acaso: o modelo nunca vê o futuro"],
-    ["Desbalanceamento", f"mais de 99% das janelas são de tempo seco; o treino usa todas as janelas com chuva ou nível alto e 3% das demais ({m.get('dados', {}).get('linhas_treino_amostradas', '?')} linhas)"],
-    ["Limiares de decisão", f"amarelo ≥ {lim.get('amarelo', '?')} · laranja ≥ {lim.get('laranja', '?')} · vermelho ≥ {lim.get('vermelho', '?')}"],
-    ["Em produção", "<code>ia/servico.py</code> lê o gold a cada 2 s, calcula o risco, grava no gold, envia ao app e aciona a sirene"],
+    ["Desbalanceamento", f"mais de 99% das janelas são de tempo seco; o treino usa todas as janelas com chuva ou nível alto e 3% das demais ({br(m.get('dados', {}).get('linhas_treino_amostradas', '?'))} linhas)"],
+    ["Limiares de decisão", f"amarelo ≥ {br(lim.get('amarelo', '?'))} · laranja ≥ {br(lim.get('laranja', '?'))} · vermelho ≥ {br(lim.get('vermelho', '?'))}"],
+    ["No protótipo", "<code>ia/servico.py</code> lê o gold a cada 2 s, calcula o risco, grava no gold, envia ao app e aciona a sirene"],
 ])}
 <h2>6.2 Agente de alerta: regras de automação</h2>
 {rubrica("<b>Prompts, agentes ou automação (1 pt):</b> as regras de automação usadas, documentadas.")}
@@ -259,10 +264,10 @@ aviso de emergência precisa ser previsível, revisável pela Defesa Civil e igu
 ])}
 <h3>Modelos de mensagem (equivalem aos "prompts" do agente)</h3>
 {tabela(["Nível", "Título", "SMS (até 160 caracteres, sem acento)"], [
-    ["Amarelo", "Atenção: chuva e nível em elevação no {{nome}}", "VigIA ATENCAO: chuva forte e nivel subindo no {{nome}}. Fique atento aos proximos avisos."],
-    ["Laranja", "Risco alto de enchente no {{nome}}", "VigIA RISCO ALTO: {{nome}} pode transbordar em ate 1h. Guarde documentos no alto e prepare-se para sair. Defesa Civil 199"],
-    ["Vermelho", "PERIGO: enchente no {{nome}}", "VigIA PERIGO: enchente no {{nome}}. SAIA AGORA para lugar alto. Nao atravesse agua. Defesa Civil 199"],
-    ["Verde", "Situação normalizada no {{nome}}", "VigIA: situacao NORMALIZADA no {{nome}}. Volte so quando a agua baixar."],
+    ["Amarelo", "Atenção: chuva e nível em elevação no &#123;nome&#125;", "VigIA ATENCAO: chuva forte e nivel subindo no &#123;nome&#125;. Fique atento aos proximos avisos."],
+    ["Laranja", "Risco alto de enchente no &#123;nome&#125;", "VigIA RISCO ALTO: &#123;nome&#125; pode transbordar em ate 1h. Guarde documentos no alto e prepare-se para sair. Defesa Civil 199"],
+    ["Vermelho", "PERIGO: enchente no &#123;nome&#125;", "VigIA PERIGO: enchente no &#123;nome&#125;. SAIA AGORA para lugar alto. Nao atravesse agua. Defesa Civil 199"],
+    ["Verde", "Situação normalizada no &#123;nome&#125;", "VigIA: situacao NORMALIZADA no &#123;nome&#125;. Volte so quando a agua baixar."],
 ])}
 <p><b>"Por quê" automático.</b> Cada alerta leva os motivos montados a partir dos próprios dados
 (<code>ia/mensagens.py</code>): "choveu 40 mm na última hora", "o nível subiu 44 cm em 30 minutos",
@@ -270,13 +275,13 @@ aviso de emergência precisa ser previsível, revisável pela Defesa Civil e igu
 "a IA estima 95% de chance de transbordo em até 1 hora". Cada nível tem ainda 3 a 4 orientações do que fazer.</p>
 <h2>6.3 Demonstração com entrada e saída</h2>
 {rubrica("<b>Demonstração (0,5 pt):</b> a funcionalidade inteligente funcionando, com exemplo de entrada e saída.")}
-<p>Comando <code>python -m ia.demonstrar</code>. A entrada é a janela real das 16h20 (horário de Brasília) de 24/01/2025 no
+<p>Comando <code>python -m ia.demonstrar</code>. A entrada é a janela das 16h20 (horário de Brasília) de 24/01/2025 no
 Córrego Aricanduva: o nível está em 38,5 cm, que a regra fixa chama de <b>normal</b>, mas choveu 40 mm em 30 minutos.</p>
 {bloco(ler("docs/evidencias/texto/ia_demonstracao.txt", "(rode python -m ia.demonstrar)"))}
-<p>O transbordo ocorreu uma hora depois (17h20). Na mesma tela do app o morador vê esse alerta:</p>
+<p>Na simulação, o córrego transborda uma hora depois (17h20). Na mesma tela do app o morador vê esse alerta:</p>
 <div class="duas">
 {figura(P + "03_minha_area_ia_antecipa.png", "App, tela Minha área às 16h20: córrego em 38 cm e a IA já indica perigo, com o porquê e o que fazer.")}
-{figura(P + "06_minha_area_transbordo.png", "Mesma tela às 17h30: o transbordo se confirmou uma hora depois do primeiro aviso.")}
+{figura(P + "06_minha_area_transbordo.png", "Mesma tela às 17h30: na simulação, o transbordo acontece uma hora depois do primeiro aviso.")}
 </div>
 <p>Exemplo oposto, em tempo calmo (<code>python -m ia.demonstrar --estacao EST-PIR-01 --nivel 60 --chuva-1h 8 --subida-30min 2</code>):</p>
 {bloco(ler("docs/evidencias/texto/ia_demonstracao_calmo.txt"), claro=True)}
@@ -288,22 +293,25 @@ faz sozinha). <b>Depois:</b> IA — alerta quando a probabilidade passa do limia
 {comparacao}
 {figura("ia/modelos/avaliacao_antes_depois.png", "Antes × depois no teste 2024–2025 (dados que o modelo nunca viu).")}
 <p><b>Leitura.</b> A regra fixa avisa em cima da hora: metade dos eventos com 10 minutos ou menos. A IA triplica os eventos avisados
-com meia hora ou mais e quadruplica a antecedência mediana, com um terço a menos de alarmes falsos. A política implantada
+com meia hora ou mais e quadruplica a antecedência mediana, com um terço a menos de alarmes falsos — isso é o modelo
+sozinho contra a regra sozinha. A política implantada
 (IA + regra como rede de segurança) avisa em 100% dos eventos, ao custo de mais alarmes — o agente trata isso com R8 (não repetir).
-Qualidade da probabilidade no teste: AUC-ROC {q.get("auc_roc", "?")} e AUC-PR {q.get("auc_pr", "?")}
-({q.get("janelas_positivas", "?")} janelas positivas em {q.get("janelas_avaliadas", "?")}).</p>
+Qualidade da probabilidade no teste: AUC-ROC {br(q.get("auc_roc", "?"))} e AUC-PR {br(q.get("auc_pr", "?"))}
+({br(q.get("janelas_positivas", "?"))} janelas positivas em {br(q.get("janelas_avaliadas", "?"))}).</p>
 {por_estacao}
 <div class="duas">
 {figura("ia/modelos/importancia_variaveis.png", "No que a IA presta atenção: a chuva recente pesa mais do que o nível — por isso ela antecipa.")}
 <div>
 <h3>Como o limiar foi escolhido</h3>
 <p>Na validação (2023), ficamos com o limiar mais sensível que <b>não gera mais alarmes falsos do que a regra fixa</b>.
-Assim a IA só pode ganhar em antecedência sem custar mais alarme à toa. O teste (2024–2025) só foi usado para reportar.</p>
+Assim o modelo, sozinho, só pode ganhar em antecedência sem custar mais alarme à toa. Somar a regra de nível como rede de
+segurança aumenta os alarmes falsos (coluna "Implantado"): foi uma escolha consciente por cobertura de 100% dos eventos.
+O teste (2024–2025) só foi usado para reportar.</p>
 <h3>Limites (honestidade)</h3>
 <ul>
 <li>O nível dos córregos é simulado; em campo o modelo precisa ser recalibrado com nível medido.</li>
 <li>Com 38 eventos no teste, cada evento vale 2,6 pontos percentuais.</li>
-<li>Uma variável (projeção do nível em 30 min) foi acrescentada depois da primeira avaliação no teste; o ganho foi pequeno (de 71% para 79%).</li>
+<li>Uma variável (projeção do nível em 30 min) foi acrescentada depois da primeira avaliação no teste; o ganho foi pequeno (cerca de 8 pontos percentuais nos eventos avisados).</li>
 </ul>
 </div>
 </div>
@@ -346,6 +354,9 @@ def area_dados() -> str:
 ])}
 <p>Saída real de <code>python -m dados.pipeline status</code> depois do histórico e de uma demonstração ao vivo:</p>
 {bloco(ler("docs/evidencias/texto/pipeline_status.txt"))}
+<p><b>Quarentena funcionando</b> (<code>python docs/ferramentas/exemplo_quarentena.py</code>): uma leitura válida e três inválidas
+de propósito passam pelo gateway; as inválidas ficam guardadas com o motivo, nada é descartado em silêncio.</p>
+{bloco(chr(10).join(ler("docs/evidencias/texto/quarentena_exemplo.txt").splitlines()[:11]), claro=True)}
 <p class="pequeno">Histórico: 14 arquivos do INMET (122.736 horas, 1,15% sem medição) → 1,47 milhão de leituras simuladas de 10 min → gold em cerca de
 30 segundos. Tempo real: um ciclo do pipeline leva menos de 1 segundo.</p>
 <h2>7.3 Dashboard</h2>
@@ -356,12 +367,12 @@ def area_dados() -> str:
 disponibilidade dos sensores — os três primeiros comparados com o período anterior.</p>
 {figura(P + "23_painel_temporal_24jan.png", "Dashboard com o filtro de período no temporal de 24/01/2025: 6 indicadores, tabela Onde agir primeiro (índice de prioridade) e nível × cotas por estação, com os alertas marcados antes do pico.")}
 <div class="duas">
-{figura(P + "22_painel_historico_verao.png", "Mesmo painel com outro filtro (verão 2024/25): os indicadores mudam com o contexto.")}
-{figura(P + "20_painel_ao_vivo.png", "Fonte Sensores ao vivo: leituras recebidas por MQTT durante a demonstração; atualiza a cada 5 s.")}
+{figura(P + "22_painel_historico_verao.png", "Mesmo painel com outro filtro (verão 2024/25): os indicadores mudam com o contexto.", recorte=0.8)}
+{figura(P + "20_painel_ao_vivo.png", "Fonte Sensores ao vivo: leituras recebidas por MQTT durante a demonstração; atualiza a cada 5 s.", recorte=0.8)}
 </div>
 <div class="duas">
-{figura(P + "24_painel_alertas.png", "Aba Alertas e ocorrências: alertas por período e nível, horário dos transbordos (escala de plantão), tabela com o motivo e o SMS.")}
-{figura(P + "26_painel_dados_monitoramento.png", "Aba Dados e monitoramento: volumes por camada, batimento dos serviços e quarentena.")}
+{figura(P + "24_painel_alertas.png", "Aba Alertas e ocorrências: alertas por período e nível, horário dos transbordos (escala de plantão), tabela com o motivo e o SMS.", recorte=0.8)}
+{figura(P + "26_painel_dados_monitoramento.png", "Aba Dados e monitoramento: volumes por camada, batimento dos serviços e quarentena.", recorte=0.8)}
 </div>
 <h2>7.4 Funções analíticas (estilo DAX)</h2>
 {rubrica("<b>Funções analíticas (0,5 pt):</b> métricas, variáveis ou funções como DAX aplicadas aos indicadores.")}
@@ -370,7 +381,7 @@ um número. A fórmula DAX equivalente está na docstring e reunida em <code>dad
 {tabela(["Medida", "Fórmula (DAX equivalente)", "Uso"], [
     ["Chuva Acumulada", "<code>AVERAGEX(VALUES(dim_estacao[estacao_id]), CALCULATE(SUM(fato_leitura[chuva_mm])))</code>", "indicador"],
     ["Nível Máximo %", "<code>MAX(fato_leitura[nivel_pct_cota])</code>", "indicador"],
-    ["Alertas Emitidos", "<code>CALCULATE(COUNTROWS(fato_alerta), fato_alerta[nivel_risco] IN {{&quot;laranja&quot;,&quot;vermelho&quot;}})</code>", "indicador"],
+    ["Alertas Emitidos", "<code>CALCULATE(COUNTROWS(fato_alerta), fato_alerta[nivel_risco] IN &#123;&quot;laranja&quot;,&quot;vermelho&quot;&#125;)</code>", "indicador"],
     ["Antecedência Mediana", "<code>MEDIANX(fato_evento, DATEDIFF([primeiro_alerta], fato_evento[inicio], MINUTE))</code>", "indicador"],
     ["% Eventos Avisados", "<code>DIVIDE(COUNTROWS(FILTER(fato_evento, [antecedencia] &gt;= 30)), COUNTROWS(fato_evento))</code>", "indicador"],
     ["Disponibilidade %", "<code>DIVIDE(COUNTROWS(fato_leitura), [Janelas Esperadas])</code>", "indicador"],
@@ -388,14 +399,14 @@ def area_mvp() -> str:
 <h1>8. Área 3 — MVP, IoT e experiência digital</h1>
 <h2>8.1 Protótipo: telas funcionais</h2>
 {rubrica("<b>Protótipo (1 pt):</b> 4 ou mais telas funcionais, web ou mobile.")}
-<p>App web em FastAPI + Jinja2 (<code>mvp/web/</code>), HTML leve sem JavaScript, pensado primeiro para celular. Doze telas funcionais;
+<p>App web em FastAPI + Jinja2 (<code>mvp/web/</code>), HTML leve sem JavaScript, pensado primeiro para celular. Doze telas funcionais e uma saída em texto puro;
 todos os prints abaixo são do protótipo rodando, capturados por <code>docs/ferramentas/capturar_evidencias.py</code>.</p>
 {tabela(["Tela", "Rota", "Quem usa", "O que faz"], [
     ["Início", "<code>/</code>", "todos", "situação de cada estação, sem login"],
     ["Cadastro e login", "<code>/cadastro</code>, <code>/entrar</code>", "todos", "conta com consentimento LGPD"],
     ["Minha área", "<code>/minha-area</code>", "morador", "risco da área, por quê, chance de transbordo, gráfico, o que fazer"],
-    ["Alertas e detalhe", "<code>/alertas</code>, <code>/alertas/{{id}}</code>", "morador, agente", "histórico; motivos, orientações, SMS, quem decidiu"],
-    ["Estações e detalhe", "<code>/estacoes</code>, <code>/estacoes/{{id}}</code>", "todos", "nível, cotas, chuva, bateria"],
+    ["Alertas e detalhe", "<code>/alertas</code>, <code>/alertas/&#123;id&#125;</code>", "morador, agente", "histórico; motivos, orientações, SMS, quem decidiu"],
+    ["Estações e detalhe", "<code>/estacoes</code>, <code>/estacoes/&#123;id&#125;</code>", "todos", "nível, cotas, chuva, bateria"],
     ["Relatar e acompanhar ocorrência", "<code>/ocorrencias/nova</code>, <code>/ocorrencias</code>", "morador", "bueiro entupido, lixo no córrego, alagamento, sirene com defeito"],
     ["Perfil", "<code>/perfil</code>", "morador", "preferências (SMS, letras grandes, alto contraste), exportar e excluir dados"],
     ["Painel do agente", "<code>/agente</code>", "agente", "sirenes, fila de ocorrências, alertas, caixa de SMS"],
@@ -414,8 +425,8 @@ todos os prints abaixo são do protótipo rodando, capturados por <code>docs/fer
 {figura(P + "11_perfil_lgpd.png", "Perfil: acessibilidade, SMS, exportar e excluir os dados.")}
 </div>
 <div class="tres celular">
-{figura(P + "14_celular_minha_area.png", "No celular (390 px): Minha área.")}
-{figura(P + "15_celular_alerta.png", "No celular: alerta.")}
+{figura(P + "14_celular_minha_area.png", "No celular (390 px): Minha área.", recorte=2.1)}
+{figura(P + "15_celular_alerta.png", "No celular: alerta.", recorte=2.1)}
 {figura(P + "12_status_txt.png", "/status.txt: texto puro.")}
 </div>
 <h2>8.2 IoT: sensores</h2>
@@ -441,12 +452,12 @@ temporal real), aplica a mesma regra local e obedece ao comando da sirene — é
 <h2>8.3 Fluxo funcional completo</h2>
 {rubrica("<b>Fluxo funcional (1 pt):</b> um uso completo da solução, do início ao fim.")}
 <p>Fluxo demonstrado com <code>docker compose up</code> ou <code>python -m devops.demo</code>, reproduzindo o temporal real de 24/01/2025
-(chuva medida pelo INMET). Horários de Brasília:</p>
+(chuva horária medida pelo INMET, repartida em janelas de 10 minutos; nível do córrego simulado). Horários de Brasília:</p>
 {tabela(["Hora", "O que acontece", "Onde ver"], [
     ["até 16h00", "tempo seco; estações publicam; app e painel em verde", "Início"],
     ["16h10", "21 mm em 10 minutos; agente emite <b>atenção</b> (amarelo) pela regra de chuva", "Alertas"],
     ["16h20", "40 mm em 30 minutos; córrego ainda em 38 cm; a <b>IA estima 95%</b> → alerta <b>vermelho</b>; SMS enfileirado; comando de sirene por MQTT", "Minha área, detalhe do alerta, caixa de SMS"],
-    ["17h20", "o Aricanduva transborda — <b>60 minutos depois</b> do aviso da IA; a regra local da estação também dispara", "Minha área, estação"],
+    ["17h20", "na simulação, o Aricanduva transborda — <b>60 minutos depois</b> do aviso da IA; a regra local da estação também dispara", "Minha área, estação"],
     ["17h30", "moradora relata bueiro entupido; a ocorrência entra no data lake e no índice de prioridade", "Relatar ocorrência, painel"],
     ["17h30", "agente vê a ocorrência, os alertas e a caixa de SMS; pode acionar a sirene", "Painel do agente"],
     ["20h20", "30 minutos em verde; agente avisa que a situação normalizou", "Minha área"],
@@ -457,7 +468,7 @@ temporal real), aplica a mesma regra local e obedece ao comando da sirene — é
 </div>
 {figura(P + "13_painel_do_agente.png", "Painel do agente: sirenes por estação, fila de ocorrências, alertas recentes e caixa de saída de SMS (telefone mascarado).")}
 <div class="duas">
-{figura(P + "21_painel_ao_vivo_alertas.png", "Os mesmos alertas e a ocorrência chegam ao dashboard (fonte Sensores ao vivo).")}
+{figura(P + "21_painel_ao_vivo_alertas.png", "Os mesmos alertas e a ocorrência chegam ao dashboard (fonte Sensores ao vivo).", recorte=0.8)}
 {figura(P + "16_minha_area_normalizada.png", "Fim do evento: situação normalizada.")}
 </div>
 </section>"""
@@ -499,19 +510,19 @@ def area_devops() -> str:
 ├── dados/       Área 2  contratos, fontes/inmet, ingestao, processamento (bronze, silver, features, gold),
 │                        simulacao, medidas, dashboard, powerbi, pipeline
 ├── mvp/         Área 3  web/ (FastAPI: rotas, banco, seguranca, validacao, templates)  iot/ (firmware Wokwi, emulador)
-├── devops/      Área 4  preparar, demo, ci_local, verificar_pilha, monitor, mosquitto, qualidade/PLANO_DE_TESTES.md
+├── devops/      Área 4  preparar, demo, ci_local, verificar_pilha, monitor, finalizar, empacotar, qualidade/PLANO_DE_TESTES.md
 ├── comum/               config, log, estacoes, http_interno
-├── tests/               dados, ia, iot, web, integracao
+├── tests/               dados, ia, iot, web, integracao, devops
 ├── docs/                diagramas, evidencias, validacao, pdf, COMO_EXPLICAR.md, contratos-tecnicos.md
 ├── .github/workflows/ci.yml   Dockerfile   docker-compose.yml   README.md''', claro=True)}
-<p>Git com {n_commits} commits pequenos, um por etapa. Últimos commits (<code>git log --oneline</code>):</p>
+<p>Git com {n_commits} commits, um por etapa do trabalho. Últimos commits (<code>git log --oneline</code>):</p>
 {bloco(git("log", "--oneline", "-n", "12"), claro=True)}
 <h2>9.2 DevOps: Docker, CI/CD e monitoramento</h2>
 {rubrica("<b>DevOps (1 pt):</b> evidência de Docker, CI/CD ou monitoramento funcionando.")}
 <p><b>Docker.</b> Uma imagem (<code>Dockerfile</code>, Python 3.13, usuário sem root) e oito serviços no <code>docker-compose.yml</code>:
 <code>mosquitto</code>, <code>preparo</code> (roda uma vez: histórico, treino, usuários), <code>app</code>, <code>gateway</code>,
 <code>pipeline</code>, <code>ia</code>, <code>dashboard</code> e <code>emulador</code>, com healthchecks e um volume para os dados.
-<code>docker compose up --build</code> sobe tudo. Serviços no ar (<code>docker compose ps</code>):</p>
+<code>docker compose up --build</code> sobe tudo (a primeira subida leva alguns minutos, porque o <code>preparo</code> monta o histórico e treina a IA). Serviços no ar (<code>docker compose ps</code>; <code>preparo</code> e <code>emulador</code> rodam e encerram, por isso aparecem seis; as portas 8010, 8511 e 1885 são da máquina de teste, trocadas pelo <code>.env</code>):</p>
 {bloco(_trecho(CI + "07_docker_ps.txt", "NAME", 0, 12) or "(execução com Docker ainda não registrada)")}
 <p><b>CI/CD.</b> O workflow <code>.github/workflows/ci.yml</code> encadeia, a cada push, sem passo manual:
 lint (ruff) → segurança do código (bandit) → vulnerabilidades em dependências (pip-audit) → testes com cobertura (pytest) →
@@ -580,7 +591,7 @@ def validacao() -> str:
 <section class="secao">
 <h1>10. Validação com pessoas reais</h1>
 {markdown_simples(texto)}
-<p class="pequeno">Roteiro usado: <code>docs/validacao/ROTEIRO_VALIDACAO.md</code> (5 perguntas, 5 minutos por pessoa).
+<p class="pequeno">Roteiro: <code>docs/validacao/ROTEIRO_VALIDACAO.md</code> (5 perguntas, 5 minutos por pessoa).
 Respostas brutas: <code>docs/validacao/respostas.csv</code>.</p>
 <h1>11. Uso de IA generativa e reaproveitamento</h1>
 {tabela(["Ferramenta", "Para quê"], [
@@ -588,7 +599,7 @@ Respostas brutas: <code>docs/validacao/respostas.csv</code>.</p>
     ["edge-tts (voz neural do Microsoft Edge)", "narração do vídeo pitch"],
 ])}
 <p>Em tempo de execução <b>não há IA generativa</b>: a previsão é um modelo de machine learning (scikit-learn) e as mensagens dos alertas
-são textos fixos. A equipe revisou o código com o guia <code>docs/COMO_EXPLICAR.md</code>, que explica cada área, os arquivos e as
+são textos fixos. O guia <code>docs/COMO_EXPLICAR.md</code> é o roteiro de revisão da equipe: explica cada área, os arquivos e as
 perguntas prováveis.</p>
 <p><b>Reaproveitamento interno, com crédito.</b> A ideia de contratos de dados, o gateway MQTT, o firmware ESP32 no Wokwi, o script
 de captura da simulação e o montador de vídeo foram adaptados de trabalhos anteriores da própria equipe (AgroSmart e Startup One,

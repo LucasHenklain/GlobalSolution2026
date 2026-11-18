@@ -102,12 +102,12 @@ Contratos técnicos entre os módulos: [docs/contratos-tecnicos.md](docs/contrat
 - [x] Plano com 21 casos e evidência de execução (154 testes automatizados) (1)
 
 ### Vídeo pitch (5) e entrega
-- [ ] Vídeo ≤ 2:55 mostrando o protótipo funcionando (`entrega/video/VigIA_pitch_Grupo14.mp4`) — conferir no fim
+- [x] Vídeo de 2:48 mostrando o protótipo funcionando (`entrega/video/VigIA_pitch_Grupo14.mp4`)
 - [ ] Link público do vídeo no `.txt` e no README — **depende da equipe**
 - [x] PDF de entregáveis (`VigIA_Grupo14_Entregaveis.pdf`, gerado por `docs/pdf/gerar_pdf.py`)
 - [x] `.txt` com grupo, RM, nomes e link (`Grupo14_integrantes.txt`; link a preencher)
 - [x] README de execução + declaração de uso de IA generativa
-- [ ] ZIP extraído e validado do zero seguindo só o README
+- [x] ZIP extraído e validado do zero seguindo só o README (pasta limpa + ambiente virtual; Docker validado na CI do GitHub)
 - [ ] Validação com gente real — **depende da equipe** (roteiro em `docs/validacao/`)
 
 ## 6. Andamento

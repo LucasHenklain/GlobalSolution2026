@@ -1,7 +1,8 @@
-# Como explicar cada área (guia da equipe)
+# Guia de estudo do código, área por área
 
-Leitura de 15 minutos. Para cada área: a ideia em uma frase, onde está no código, o que mostrar e as perguntas
-que o professor provavelmente fará. Quem for apresentar uma área deve abrir os arquivos citados e rodar o comando.
+Leitura de 15 minutos, para a equipe revisar e entender o que está sendo entregue. Para cada área: a ideia em uma frase,
+onde está no código, o que rodar para ver funcionando e perguntas para testar o entendimento.
+Quem for apresentar uma área deve abrir os arquivos citados e rodar o comando.
 
 ## A história em 30 segundos
 
@@ -30,7 +31,7 @@ que voltam para o data lake. A Defesa Civil vê tudo num painel e decide onde ag
 
 **Mostrar:** `python -m ia.demonstrar` (nível 38 cm, que a regra fixa chama de "normal", vira alerta vermelho com 95%).
 
-**Perguntas prováveis**
+**Perguntas e respostas**
 - *Por que gradient boosting?* Porque a relação é não linear (chuva forte com solo encharcado escoa muito mais) e
   árvores lidam com isso sem normalizar dados. É conteúdo de scikit-learn; treina em menos de 1 minuto.
 - *Qual é o "antes"?* A regra de limiar fixo: alertar quando o nível passa da cota de alerta. É o que um sensor sem IA faz
@@ -46,7 +47,9 @@ que voltam para o data lake. A Defesa Civil vê tudo num painel e decide onde ag
 - *Por que não usar um LLM para escrever o alerta?* Aviso de emergência precisa ser previsível, revisável pela Defesa
   Civil e funcionar sem internet. Texto fixo cumpre isso.
 
-**Números para decorar:** 23,7% → 78,9% dos eventos avisados com 30+ min · mediana 10 → 40 min · alarmes falsos 61 → 41 · F1 0,28 → 0,57.
+**Números principais (modelo sozinho contra a regra sozinha):** 23,7% → 78,9% dos eventos avisados com 30+ min · mediana 10 → 40 min ·
+alarmes falsos 61 → 41 · F1 0,28 → 0,57. **Política implantada (IA + regra):** 84,2% · 40 min · 78 alarmes falsos · F1 0,41 —
+a rede de segurança avisa 100% dos eventos, ao custo de mais alarmes.
 
 ---
 
@@ -64,7 +67,7 @@ que voltam para o data lake. A Defesa Civil vê tudo num painel e decide onde ag
 **Mostrar:** `python -m dados.pipeline status` e o dashboard (`python -m streamlit run dados/dashboard/app.py`):
 trocar o período para "Temporal de 24/01/2025", desmarcar estações, mudar o nível de risco — os 6 indicadores mudam.
 
-**Perguntas prováveis**
+**Perguntas e respostas**
 - *Por que camadas?* Para poder reprocessar: se uma regra mudar, refazemos silver e gold a partir do bronze sem
   perder o dado original.
 - *O que é a função mais importante?* `features.py`: o **mesmo código** calcula as variáveis para treinar a IA e para o
@@ -90,7 +93,7 @@ são as telas; `banco.py` é o SQLite; `seguranca.py` e `validacao.py` protegem;
 **Mostrar o fluxo completo:** `python -m devops.demo` → entrar como morador → "Minha área" muda de verde para vermelho →
 abrir o alerta (por quê, o que fazer, SMS) → relatar ocorrência → entrar como agente → ver a ocorrência, a caixa de SMS e o botão da sirene.
 
-**Perguntas prováveis**
+**Perguntas e respostas**
 - *Quais são os 2 sensores?* Ultrassônico HC-SR04 (distância até a água → nível) e pluviômetro de báscula (cada
   basculada = 0,25 mm, contada por interrupção). Há ainda a bateria. Atuadores: 3 LEDs e a sirene.
 - *Por que Wokwi e não TinkerCad?* O TinkerCad não simula ESP32 nem rede; no Wokwi o firmware publica MQTT de verdade.
@@ -119,7 +122,7 @@ abrir o alerta (por quê, o que fazer, SMS) → relatar ocorrência → entrar c
   papéis morador × agente, token interno, cabeçalhos (CSP), LGPD (exportar e excluir conta).
 - **Testes:** `devops/qualidade/PLANO_DE_TESTES.md` (21 casos) e a pasta `tests/`.
 
-**Perguntas prováveis**
+**Perguntas e respostas**
 - *O CI rodou no GitHub?* Sim: o push de 18/11 disparou o workflow `ci` e os 3 jobs passaram (qualidade → build e
   teste da pilha → publicação da imagem). O print e o endereço da execução estão na seção 9.2 do PDF; os mesmos passos
   também rodaram localmente (`python -m devops.ci_local --com-docker`).
@@ -131,7 +134,7 @@ abrir o alerta (por quê, o que fazer, SMS) → relatar ocorrência → entrar c
 
 ---
 
-## Frases honestas para usar
+## O que é real e o que é simulado
 
 - "A chuva é real, do INMET; o nível do córrego é simulado. Os números da IA valem para esse cenário."
 - "A IA não substitui a regra de nível: ela antecipa. A regra continua como rede de segurança."

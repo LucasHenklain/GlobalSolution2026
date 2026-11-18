@@ -1,0 +1,19 @@
+ENVIADAS AO GATEWAY (1 válida e 3 inválidas de propósito):
+  vigia/sensores/EST-ARI-01/leitura  {"estacao_id": "EST-ARI-01", "medido_em": "2026-11-18T18:02:33Z", "nivel_cm": 142.5, "chuva_mm": 1.25}
+    → ACEITA
+  vigia/sensores/EST-ARI-01/leitura  {"estacao_id": "EST-ARI-01", "medido_em": "2026-11-18T18:02:33Z", "nivel_cm": 999, "chuva_mm": 0}
+    → REJEITADA: LEI-03 nível fora da faixa
+  vigia/sensores/EST-PIR-01/leitura  {"estacao_id": "EST-ARI-01", "medido_em": "2026-11-18T18:02:33Z", "nivel_cm": 80, "chuva_mm": 0}
+    → REJEITADA: GTW-02 estação diferente da do tópico
+  vigia/sensores/EST-IPI-01/leitura  {"estacao_id": "EST-IPI-01", "medido_em": "2099-01-01T00:00:00Z", "nivel_cm": 50, "chuva_mm": 0}
+    → REJEITADA: LEI-05 leitura no futuro
+
+CONTADORES: {'recebidas': 4, 'validas': 1, 'rejeitadas': 3, 'lotes': 1, 'chaves_desconhecidas': 0}
+
+LANDING (aceitas):
+  {"estacao_id":"EST-ARI-01","medido_em":"2026-11-18T18:02:33Z","nivel_cm":142.5,"chuva_mm":1.25,"recebido_em":"2026-11-18T18:02:40.101Z"}
+
+QUARENTENA DO GATEWAY:
+  {"motivo":"LEI-03 nível fora da faixa","bruto":{"estacao_id":"EST-ARI-01","medido_em":"2026-11-18T18:02:33Z","nivel_cm":999,"chuva_mm":0},"topico":"vigia/sensores/EST-ARI-01/leitura","recebido_em":"2026-11-18T18:02:40.112Z"}
+  {"motivo":"GTW-02 estação diferente da do tópico","bruto":{"estacao_id":"EST-ARI-01","medido_em":"2026-11-18T18:02:33Z","nivel_cm":80,"chuva_mm":0},"topico":"vigia/sensores/EST-PIR-01/leitura","recebido_em":"2026-11-18T18:02:40.112Z"}
+  {"motivo":"LEI-05 leitura no futuro","bruto":{"estacao_id":"EST-IPI-01","medido_em":"2099-01-01T00:00:00Z","nivel_cm":50,"chuva_mm":0},"topico":"vigia/sensores/EST-IPI-01/leitura","recebido_em":"2026-11-18T18:02:40.112Z"}

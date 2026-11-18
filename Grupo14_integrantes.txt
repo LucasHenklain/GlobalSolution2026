@@ -6,7 +6,7 @@ Projeto: VigIA - alerta comunitario de enchentes
 
 Integrantes:
 RM551178 - Lucas Dalmas Batista e Souza
-RM97881  - Lucas Emanuel de Melo Silva
+RM97881  - Lucas Emanuel de Mélo Silva
 RM97592  - Kayque Moraes Dias
 RM99350  - Lucas Moraes Henklain da Silva
 RM99198  - Vinicius Pinheiro

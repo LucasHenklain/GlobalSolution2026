@@ -44,10 +44,35 @@ def bloco(texto: str, claro: bool = False, max_linhas: int | None = None) -> str
     return f'<pre class="{"claro" if claro else ""}">{esc(chr(10).join(linhas))}</pre>'
 
 
-def figura(caminho: str, legenda: str, classe: str = "") -> str:
+def br(valor) -> str:
+    """Número no padrão brasileiro: vírgula decimal e ponto de milhar."""
+    if isinstance(valor, bool) or not isinstance(valor, (int, float)):
+        return str(valor)
+    if isinstance(valor, int):
+        return f"{valor:,}".replace(",", ".")
+    return f"{valor:,}".replace(",", "#").replace(".", ",").replace("#", ".")
+
+
+def _recortar(arquivo: Path, proporcao: float) -> Path:
+    """Guarda só o topo de um print muito alto (altura = largura × proporção), para ele ficar legível na página."""
+    from PIL import Image
+
+    with Image.open(arquivo) as imagem:
+        altura = int(imagem.width * proporcao)
+        if imagem.height <= altura:
+            return arquivo
+        destino = TRABALHO / "cortes" / arquivo.name
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        imagem.crop((0, 0, imagem.width, altura)).save(destino)
+    return destino
+
+
+def figura(caminho: str, legenda: str, classe: str = "", recorte: float | None = None) -> str:
     arquivo = RAIZ / caminho
     if not arquivo.exists():
         return f'<div class="pendente">Imagem ainda não gerada: <code>{esc(caminho)}</code></div>'
+    if recorte:
+        arquivo = _recortar(arquivo, recorte)
     return f'<figure class="{classe}"><img src="{arquivo.as_uri()}"><figcaption>{legenda}</figcaption></figure>'
 
 
@@ -113,7 +138,14 @@ def imprimir_pdf(arquivo_html: Path, destino: Path) -> None:
     with abrir(1240, 1754) as (_, pagina):
         pagina.goto(arquivo_html.as_uri(), wait_until="load")
         pagina.wait_for_timeout(1500)  # tempo para todas as imagens locais decodificarem
-        pagina.pdf(path=str(destino), format="A4", print_background=True, prefer_css_page_size=True)
+        rodape = (
+            '<div style="font-size:7.5px;width:100%;text-align:center;color:#7a8794;font-family:Segoe UI,Arial">'
+            'VigIA · Grupo 14 · Global Solution 2026/2 · página <span class="pageNumber"></span> de <span class="totalPages"></span></div>'
+        )
+        pagina.pdf(
+            path=str(destino), format="A4", print_background=True, prefer_css_page_size=True,
+            display_header_footer=True, header_template="<div></div>", footer_template=rodape,
+        )  # fmt: skip
     if not destino.exists():
         raise SystemExit("o navegador não gerou o PDF; abra docs/pdf/_work/entregaveis.html e imprima em PDF manualmente")
 
