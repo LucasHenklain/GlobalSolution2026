@@ -6,6 +6,8 @@
 > O VigIA mede o nível do córrego e a chuva, **prevê o transbordo com até 1 hora de antecedência** e avisa o morador
 > em linguagem simples — no celular, por SMS e pela sirene da própria estação, mesmo com internet ruim.
 
+**Repositório:** <https://github.com/LucasHenklain/GlobalSolution2026> · [![ci](https://github.com/LucasHenklain/GlobalSolution2026/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasHenklain/GlobalSolution2026/actions/workflows/ci.yml)
+
 **Vídeo pitch (3 min):** [A PREENCHER — link público do YouTube/Drive]
 
 | Integrante | RM |

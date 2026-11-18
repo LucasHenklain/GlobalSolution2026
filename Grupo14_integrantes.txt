@@ -11,6 +11,8 @@ RM97592  - Kayque Moraes Dias
 RM99350  - Lucas Moraes Henklain da Silva
 RM99198  - Vinicius Pinheiro
 
+Repositorio: https://github.com/LucasHenklain/GlobalSolution2026
+
 Link do video pitch: [A PREENCHER - link publico do YouTube/Drive, testado em aba anonima]
 
 Conteudo do .zip:

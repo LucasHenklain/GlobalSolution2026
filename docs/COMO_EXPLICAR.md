@@ -120,8 +120,9 @@ abrir o alerta (por quê, o que fazer, SMS) → relatar ocorrência → entrar c
 - **Testes:** `devops/qualidade/PLANO_DE_TESTES.md` (21 casos) e a pasta `tests/`.
 
 **Perguntas prováveis**
-- *O CI rodou no GitHub?* Vejam a seção de DevOps do PDF: ela diz exatamente o que rodou no GitHub e o que rodou
-  localmente. Não digam que rodou onde não rodou.
+- *O CI rodou no GitHub?* Sim: o push de 18/11 disparou o workflow `ci` e os 3 jobs passaram (qualidade → build e
+  teste da pilha → publicação da imagem). O print e o endereço da execução estão na seção 9.2 do PDF; os mesmos passos
+  também rodaram localmente (`python -m devops.ci_local --com-docker`).
 - *Qual a diferença entre autenticação e autorização aqui?* Autenticação: login com senha (bcrypt). Autorização: o
   morador não entra no painel do agente (403) nem vê ocorrência de outro morador.
 - *Por que cifrar o telefone?* É dado pessoal (LGPD). Se o banco vazar, o número não aparece. Nas telas ele sai mascarado.

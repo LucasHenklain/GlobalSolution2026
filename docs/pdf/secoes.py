@@ -81,7 +81,7 @@ que o modelo nunca viu ({a.get("eventos", "?")} transbordos). Chuva real do INME
 ])}
 <div class="aviso"><b>Transparência.</b> A chuva é medição real do INMET. O nível dos córregos, as 4 estações e o número de moradores
 por área são simulados e isso está dito em cada tela e em cada tabela. Os números da IA valem para esse cenário simulado.
-O que rodou localmente e o que rodou no GitHub está discriminado na seção 9.2.</div>
+O pipeline rodou no GitHub Actions e localmente; as duas evidências estão na seção 9.2.</div>
 </section>"""
 
 
@@ -516,11 +516,11 @@ def area_devops() -> str:
 <p><b>CI/CD.</b> O workflow <code>.github/workflows/ci.yml</code> encadeia, a cada push, sem passo manual:
 lint (ruff) → segurança do código (bandit) → vulnerabilidades em dependências (pip-audit) → testes com cobertura (pytest) →
 build da imagem → pilha no ar e teste de fumaça de ponta a ponta → publicação da imagem no GitHub Container Registry (só na <code>main</code>).</p>
-<div class="aviso"><b>O que rodou onde.</b> Os mesmos passos do workflow foram executados nesta máquina por
-<code>python -m devops.ci_local --com-docker</code>; os registros completos estão em <code>docs/evidencias/ci_local/</code>.
-A execução no GitHub Actions depende de o repositório estar publicado; o estado no momento da geração deste PDF está em
-<code>docs/pdf/conteudo/ci_github.md</code> e reproduzido abaixo.</div>
+<div class="aviso"><b>O que rodou onde.</b> O pipeline rodou em dois lugares: no <b>GitHub Actions</b>, disparado pelo push
+(evidência abaixo), e nesta máquina, com os mesmos passos, por <code>python -m devops.ci_local --com-docker</code>
+(registros completos em <code>docs/evidencias/ci_local/</code>).</div>
 {markdown_simples(ler("docs/pdf/conteudo/ci_github.md", "Execução no GitHub Actions: ainda não realizada (repositório não publicado até a geração deste PDF)."))}
+{figura(P + "30_github_actions_run.png", "GitHub Actions, execução #1 do workflow ci: um push disparou lint, segurança e testes → build da imagem e teste da pilha → publicação da imagem, tudo com sucesso.")}
 <h3>Execução local do pipeline</h3>
 {_resumo_ci()}
 <p><b>Teste de fumaça de ponta a ponta na pilha Docker</b> (o emulador publica o temporal por MQTT; o script confere a saúde dos serviços e

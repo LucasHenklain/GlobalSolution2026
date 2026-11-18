@@ -97,7 +97,7 @@ Contratos técnicos entre os módulos: [docs/contratos-tecnicos.md](docs/contrat
 
 ### Área 4 · DevOps, segurança e qualidade (3)
 - [x] Organização por módulos + Git (0,5)
-- [x] Docker (8 serviços), CI local com teste de fumaça ponta a ponta, monitoramento (1) — CI no GitHub depende do push
+- [x] Docker (8 serviços), CI no GitHub Actions (execução #1, 3 jobs com sucesso) e local, monitoramento (1)
 - [x] Segurança: autenticação, autorização, validação, CSRF, cifra do telefone, LGPD (0,5)
 - [x] Plano com 21 casos e evidência de execução (154 testes automatizados) (1)
 
