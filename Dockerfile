@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-WORKDIR /app
+WORKDIR /srv/vigia
 
 # Dependências primeiro: esta camada só é refeita quando o requirements.txt muda.
 COPY requirements.txt .
@@ -29,7 +29,7 @@ COPY pyproject.toml ./
 # Usuário sem privilégios: se o app for comprometido, o invasor não vira root no container.
 RUN useradd --create-home --uid 10001 vigia \
     && mkdir -p /dados_vigia/lake /dados_vigia/var /dados_vigia/modelos \
-    && chown -R vigia:vigia /dados_vigia /app
+    && chown -R vigia:vigia /dados_vigia /srv/vigia
 USER vigia
 
 ENV VIGIA_LAKE=/dados_vigia/lake \

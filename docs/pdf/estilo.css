@@ -1,0 +1,48 @@
+/* Estilo do PDF de entregáveis do VigIA (A4, impresso pelo Edge). */
+@page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+* { box-sizing: border-box; }
+html { font-family: "Segoe UI", Arial, sans-serif; font-size: 10.2pt; color: #14202c; line-height: 1.42; }
+body { margin: 0; }
+h1 { font-size: 19pt; margin: 0 0 3mm; color: #0b2a4a; break-after: avoid; }
+h2 { font-size: 13pt; margin: 6mm 0 2mm; color: #0b2a4a; break-after: avoid; border-bottom: 1.5px solid #d6dee6; padding-bottom: 1mm; }
+h3 { font-size: 11pt; margin: 4mm 0 1.5mm; color: #14202c; break-after: avoid; }
+p { margin: 0 0 2.2mm; }
+ul, ol { margin: 0 0 2.2mm; padding-left: 5mm; }
+li { margin-bottom: 0.8mm; }
+a { color: #0b5cad; text-decoration: none; }
+code { font-family: Consolas, "Courier New", monospace; font-size: 8.8pt; background: #eef2f6; padding: 0 1mm; border-radius: 2px; }
+pre { font-family: Consolas, "Courier New", monospace; font-size: 7.4pt; line-height: 1.28; background: #0f1b28; color: #e6edf3;
+      padding: 3mm; border-radius: 2mm; white-space: pre-wrap; word-break: break-word; margin: 0 0 2.5mm; break-inside: avoid; }
+pre.claro { background: #f3f6f9; color: #14202c; border: 1px solid #d6dee6; }
+table { border-collapse: collapse; width: 100%; margin: 0 0 3mm; font-size: 9pt; break-inside: avoid; }
+th { background: #0b2a4a; color: #fff; text-align: left; padding: 1.4mm 2mm; font-weight: 600; }
+td { border-bottom: 1px solid #d6dee6; padding: 1.3mm 2mm; vertical-align: top; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr:nth-child(even) td { background: #f7f9fb; }
+.secao { break-before: page; }
+.rubrica { background: #eef6ff; border-left: 4px solid #2a78d6; padding: 2mm 3mm; margin: 0 0 3mm; font-size: 9.2pt; break-inside: avoid; }
+.rubrica b { color: #0b2a4a; }
+.aviso { background: #fff7e0; border-left: 4px solid #d99a00; padding: 2mm 3mm; margin: 0 0 3mm; font-size: 9.2pt; break-inside: avoid; }
+.pendente { background: #fdecec; border-left: 4px solid #c0392b; padding: 2mm 3mm; margin: 0 0 3mm; break-inside: avoid; }
+figure { margin: 0 0 3mm; break-inside: avoid; text-align: center; }
+figure img { max-width: 100%; border: 1px solid #c9d1da; border-radius: 1.5mm; }
+figcaption { font-size: 8.4pt; color: #51606f; margin-top: 1mm; text-align: left; }
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; align-items: start; }
+.tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; align-items: start; }
+.celular img { max-height: 118mm; width: auto; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; margin: 0 0 3mm; }
+.kpi { border: 1px solid #c9d1da; border-radius: 2mm; padding: 2.2mm 2.5mm; break-inside: avoid; }
+.kpi .v { font-size: 17pt; font-weight: 700; color: #0b2a4a; line-height: 1.1; }
+.kpi .a { font-size: 8.4pt; color: #51606f; }
+.kpi .r { font-size: 8.6pt; }
+.pequeno { font-size: 8.6pt; color: #51606f; }
+
+/* capa */
+.capa { height: 262mm; display: flex; flex-direction: column; justify-content: space-between; break-after: page; }
+.capa .faixa { background: #0b2a4a; color: #fff; padding: 14mm 12mm; border-radius: 3mm; }
+.capa .marca { font-size: 40pt; font-weight: 800; letter-spacing: -0.5pt; }
+.capa .marca span { color: #58b4ff; }
+.capa .sub { font-size: 15pt; margin-top: 2mm; }
+.capa .frase { font-size: 11.5pt; margin-top: 8mm; max-width: 135mm; color: #d5e6f7; }
+.capa .meta { font-size: 10.5pt; }
+.capa table { font-size: 10pt; width: 115mm; }

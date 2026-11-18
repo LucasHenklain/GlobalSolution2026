@@ -76,7 +76,7 @@ services:
 
   dashboard:
     <<: *vigia
-    command: ["python", "-m", "streamlit", "run", "dados/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true", "--browser.gatherUsageStats", "false"]
+    command: ["python", "-m", "streamlit", "run", "dados/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true", "--browser.gatherUsageStats", "false", "--client.toolbarMode", "minimal"]
     depends_on:
       preparo: {condition: service_completed_successfully}
     ports:

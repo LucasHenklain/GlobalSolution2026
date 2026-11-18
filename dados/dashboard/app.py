@@ -100,7 +100,7 @@ def carregar(origem: str, de: datetime, ate: datetime, estacoes: tuple[str, ...]
 
 def _delta(atual: float, anterior: float) -> str | None:
     variacao = medidas.variacao_pct(atual, anterior)
-    return None if variacao is None else f"{variacao:+.0f}% vs. período anterior"
+    return None if variacao is None else f"{variacao:+.0f}% vs. anterior"
 
 
 def indicadores(dados: dict, anterior: dict) -> None:
@@ -110,19 +110,19 @@ def indicadores(dados: dict, anterior: dict) -> None:
     c = st.columns(6)
     chuva, chuva_a = medidas.chuva_acumulada_mm(leit), medidas.chuva_acumulada_mm(leit_a)
     c[0].metric("Chuva acumulada", f"{chuva:.0f} mm", _delta(chuva, chuva_a), delta_color="off", help="Média entre as estações selecionadas.")
-    c[1].metric("Nível máximo", f"{medidas.nivel_maximo_pct(leit):.0f}% da cota", help="100% = o córrego transborda.")
+    c[1].metric("Nível máx. (% da cota)", f"{medidas.nivel_maximo_pct(leit):.0f}%", help="100% = o córrego transborda.")
     n_ev, n_ev_a = medidas.eventos_de_transbordo(ev), medidas.eventos_de_transbordo(ev_a)
     c[2].metric("Transbordos", n_ev, _delta(n_ev, n_ev_a), delta_color="inverse")
     n_al, n_al_a = medidas.alertas_emitidos(al), medidas.alertas_emitidos(al_a)
-    c[3].metric("Alertas (risco alto e perigo)", n_al, _delta(n_al, n_al_a), delta_color="off")
+    c[3].metric("Alertas de risco alto", n_al, _delta(n_al, n_al_a), delta_color="off", help="Níveis laranja (risco alto) e vermelho (perigo).")
     c[4].metric(
         "Antecedência mediana",
         f"{medidas.antecedencia_mediana_min(ev, al):.0f} min" if len(ev) else "—",
-        f"{medidas.taxa_eventos_avisados_pct(ev, al):.0f}% avisados com 30+ min" if len(ev) else None,
+        f"{medidas.taxa_eventos_avisados_pct(ev, al):.0f}% com 30+ min" if len(ev) else None,
         delta_color="off",
         help="Tempo entre o primeiro alerta de risco alto/perigo e o início do transbordo.",
     )
-    c[5].metric("Disponibilidade dos sensores", f"{medidas.disponibilidade_sensores_pct(leit):.1f}%", help="Janelas de 10 min com leitura ÷ janelas esperadas.")
+    c[5].metric("Sensores no ar", f"{medidas.disponibilidade_sensores_pct(leit):.1f}%", help="Disponibilidade: janelas de 10 min com leitura ÷ janelas esperadas.")
 
 
 # ----------------------------------------------------------------------------- gráficos
@@ -158,6 +158,7 @@ def grafico_nivel_e_chuva(leituras: pd.DataFrame, alertas: pd.DataFrame, dim: pd
         rows=2 * len(estacoes), cols=1, shared_xaxes=True, vertical_spacing=0.035, subplot_titles=titulos,
         row_heights=[h for _ in estacoes for h in (0.72, 0.28)],
     )  # fmt: skip
+    na_legenda: set[str] = set()  # cada nível de alerta aparece uma vez só na legenda
     for i, estacao_id in enumerate(estacoes):
         serie = dados[dados["estacao_id"] == estacao_id]
         cor = COR_ESTACAO[list(dim["estacao_id"]).index(estacao_id) % len(COR_ESTACAO)]
@@ -184,10 +185,11 @@ def grafico_nivel_e_chuva(leituras: pd.DataFrame, alertas: pd.DataFrame, dim: pd
                     go.Scatter(x=grupo["local"], y=grupo["nivel_cm"] / cotas.loc[estacao_id, "cota_transbordo_cm"] * 100, mode="markers",
                                marker={"color": COR_RISCO[nivel], "size": 10, "symbol": "diamond" if nivel == "laranja" else "square",
                                        "line": {"color": "white", "width": 2}},
-                               name=f"alerta: {ROTULO_RISCO[nivel]}", legendgroup=nivel, showlegend=i == 0,
+                               name=f"alerta: {ROTULO_RISCO[nivel]}", legendgroup=nivel, showlegend=nivel not in na_legenda,
                                customdata=grupo[["motivo"]], hovertemplate="%{x|%d/%m %H:%M} · alerta<br>%{customdata[0]}<extra></extra>"),
                     row=linha_nivel, col=1,
                 )  # fmt: skip
+                na_legenda.add(nivel)
     fig.update_annotations(font_size=12)
     st.plotly_chart(_estilo(fig, 250 * len(estacoes) + 60), width="stretch")
     st.caption(f"Resolução: {rotulo}. Horário de Brasília. Linhas tracejadas: cotas de alerta e de transbordo de cada estação.")
@@ -355,14 +357,8 @@ def aba_dados() -> None:
 # ----------------------------------------------------------------------------- página
 
 
-def pagina() -> None:
-    f = filtros()
-    if f is None:
-        return
-    st.title("Painel da Defesa Civil")
-    if not f["estacoes"]:
-        st.warning("Escolha ao menos uma estação.")
-        return
+def conteudo(f: dict) -> None:
+    """Indicadores e abas. No modo ao vivo, só este trecho é refeito a cada 5 s (os filtros ficam parados)."""
     dados = carregar(f["origem"], f["de"], f["ate"], tuple(f["estacoes"]))
     duracao = f["ate"] - f["de"]
     anterior = carregar(f["origem"], f["de"] - duracao, f["de"], tuple(f["estacoes"]))
@@ -383,12 +379,18 @@ def pagina() -> None:
         aba_ia()
     with tecnica:
         aba_dados()
-    if f["ao_vivo"]:
-        # Recarrega sozinho enquanto o tempo real está ligado (simples e sem JavaScript próprio).
-        import time
 
-        time.sleep(5)
-        st.rerun()
+
+def pagina() -> None:
+    f = filtros()
+    if f is None:
+        return
+    st.title("Painel da Defesa Civil")
+    if not f["estacoes"]:
+        st.warning("Escolha ao menos uma estação.")
+        return
+    # st.fragment com run_every refaz só o conteúdo, sem piscar a página nem perder a aba aberta.
+    st.fragment(run_every=5 if f["ao_vivo"] else None)(conteudo)(f)
 
 
 pagina()

@@ -101,7 +101,8 @@ def main() -> None:
         _iniciar(
             "painel",
             [py, "-m", "streamlit", "run", "dados/dashboard/app.py", "--server.port", str(args.porta_painel),
-             "--server.headless", "true", "--browser.gatherUsageStats", "false"],
+             "--server.address", "127.0.0.1", "--server.headless", "true", "--browser.gatherUsageStats", "false",
+             "--client.toolbarMode", "minimal"],
             ambiente,
         ),
     ]  # fmt: skip
