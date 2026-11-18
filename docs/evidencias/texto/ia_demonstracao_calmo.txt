@@ -1,0 +1,6 @@
+=== SAÍDA ===
+probabilidade de transbordo em 60 min: 0.2%   (limiares: {'amarelo': 0.067, 'laranja': 0.2, 'vermelho': 0.6})
+nível de risco: VERDE   decidido por: regra de nível
+regra de limiar fixo (o 'antes') diria: normal
+
+nenhum alerta emitido (risco verde).

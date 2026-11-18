@@ -1,0 +1,18 @@
+$ ~\AppData\Local\Temp\vigia_venv\Scripts\python.exe -m bandit -q -c pyproject.toml -r comum dados ia mvp devops
+
+
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:38
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:39
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:39
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:39
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:39
+[tester]	WARNING	nosec encountered (B608), but no failed test on file dados\dashboard\consultas.py:49
+[tester]	WARNING	nosec encountered (B607), but no failed test on file devops\ci_local.py:89
+[tester]	WARNING	nosec encountered (B603), but no failed test on file devops\ci_local.py:89
+[manager]	WARNING	Test in comment: comandos is not a test name or id, ignoring
+[manager]	WARNING	Test in comment: fixos is not a test name or id, ignoring
+[manager]	WARNING	Test in comment: deste is not a test name or id, ignoring
+[manager]	WARNING	Test in comment: arquivo is not a test name or id, ignoring
+[tester]	WARNING	nosec encountered (B603), but no failed test on file devops\preparar.py:50
+
+[código de saída 0 em 5.2 s]

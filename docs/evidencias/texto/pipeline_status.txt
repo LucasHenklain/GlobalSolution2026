@@ -1,0 +1,24 @@
+Data lake: dados/lake
+
+[landing] 0 arquivo(s), 0.0 MB
+
+[bronze] 47 arquivo(s), 26.2 MB
+  inmet                          14 arquivo(s)                  
+  ocorrencias                     1 arquivo(s)                  
+  sensores                        4 arquivo(s)                  
+  sensores_simulados             28 arquivo(s)  1.468.492 linhas
+
+[silver] 3 arquivo(s), 13.1 MB
+  chuva_inmet.parquet             1 arquivo(s)    122.736 linhas
+  leituras                        2 arquivo(s)  1.468.784 linhas
+
+[gold] 12 arquivo(s), 31.7 MB
+  agg_diario                      2 arquivo(s)     10.236 linhas
+  dim_estacao.parquet             1 arquivo(s)          4 linhas
+  fato_alerta                     2 arquivo(s)      1.863 linhas
+  fato_evento                     2 arquivo(s)        125 linhas
+  fato_leitura                    2 arquivo(s)  1.473.124 linhas
+  fato_ocorrencia.parquet         1 arquivo(s)          1 linhas
+  fato_risco                      2 arquivo(s)  1.473.124 linhas
+
+[quarentena] 0 arquivo(s), 0.0 MB

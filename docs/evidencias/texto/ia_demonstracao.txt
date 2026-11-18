@@ -1,0 +1,51 @@
+=== ENTRADA (uma janela de 10 min do gold) ===
+{
+  "estacao_id": "EST-ARI-01",
+  "medido_em": "2025-01-24T19:20:00.000Z",
+  "nivel_cm": 38.5,
+  "nivel_pct_cota": 13.75,
+  "chuva_mm": 19.5,
+  "chuva_30min": 40.25,
+  "chuva_1h": 40.25,
+  "chuva_3h": 40.25,
+  "chuva_24h": 40.25,
+  "chuva_72h": 50.25,
+  "delta_nivel_10min": 2.5,
+  "delta_nivel_30min": 5.5,
+  "estado_regra": "normal"
+}
+
+cotas de Córrego Aricanduva: atenção 150 cm · alerta 220 cm · transbordo 280 cm
+
+=== SAÍDA ===
+probabilidade de transbordo em 60 min: 95.1%   (limiares: {'amarelo': 0.067, 'laranja': 0.2, 'vermelho': 0.6})
+nível de risco: VERMELHO   decidido por: IA
+regra de limiar fixo (o 'antes') diria: normal
+
+alerta emitido pelo agente:
+{
+  "alerta_id": "ALT-ARI-202501241920-VRM",
+  "estacao_id": "EST-ARI-01",
+  "emitido_em": "2025-01-24T19:20:00Z",
+  "nivel_risco": "vermelho",
+  "prob": 0.951,
+  "nivel_cm": 38.5,
+  "chuva_1h": 40.2,
+  "motivo": [
+    "choveu 40 mm na última hora",
+    "o solo já está encharcado (40 mm em 24 horas)",
+    "a IA estima 95% de chance de transbordo em até 1 hora"
+  ],
+  "origem_decisao": "ia",
+  "titulo": "PERIGO: enchente no Córrego Aricanduva",
+  "mensagem": "O córrego está transbordando ou vai transbordar a qualquer momento em Vila Aricanduva. Saia agora para um lugar alto e seguro.",
+  "orientacoes": [
+    "Saia agora para um lugar alto. Não espere a água chegar.",
+    "Não atravesse ruas alagadas, a pé ou de carro.",
+    "Se der tempo, desligue a chave geral de energia.",
+    "Emergência: ligue 199 (Defesa Civil) ou 193 (Bombeiros)."
+  ],
+  "mensagem_sms": "VigIA PERIGO: enchente no Corrego Aricanduva. SAIA AGORA para lugar alto. Nao atravesse agua. Defesa Civil 199"
+}
+
+comando para a sirene: {"acao": "ligar", "nivel": "vermelho", "segundos": 60, "alerta_id": "ALT-ARI-202501241920-VRM"}

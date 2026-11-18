@@ -1,0 +1,6 @@
+$ ~\AppData\Local\Temp\vigia_venv\Scripts\python.exe -m ruff check .
+
+All checks passed!
+
+
+[código de saída 0 em 4.2 s]

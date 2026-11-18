@@ -1,0 +1,6 @@
+$ docker compose exec -T app python -m devops.monitor --uma-vez --dashboard http://dashboard:8501
+
+{"em": "2026-11-18T15:43:39Z", "nivel": "INFO", "modulo": "devops.monitor", "msg": "saúde", "app": "ok", "dashboard": "ok", "gateway_mqtt": "ok", "pipeline": "ok", "ia": "ok", "saudavel": true}
+
+
+[código de saída 0 em 9.9 s]

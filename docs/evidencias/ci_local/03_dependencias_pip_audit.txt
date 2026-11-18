@@ -1,0 +1,6 @@
+$ ~\AppData\Local\Temp\vigia_venv\Scripts\python.exe -m pip_audit -r requirements.txt
+
+
+No known vulnerabilities found
+
+[código de saída 0 em 130.6 s]

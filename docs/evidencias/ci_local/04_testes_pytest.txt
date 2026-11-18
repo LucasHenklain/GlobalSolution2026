@@ -1,0 +1,96 @@
+$ ~\AppData\Local\Temp\vigia_venv\Scripts\python.exe -m pytest --cov=comum --cov=dados --cov=ia --cov=mvp --cov-report=term -v --junitxml=.\docs\evidencias\ci_local\relatorio-testes.xml
+
+============================= test session starts =============================
+platform win32 -- Python 3.13.1, pytest-9.0.3, pluggy-1.7.0
+rootdir: .
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, platformdirs-4.14.7, cov-7.1.0
+collected 154 items
+
+tests\dados\test_dashboard.py ..                                         [  1%]
+tests\dados\test_features.py ......                                      [  5%]
+tests\dados\test_medidas.py .....                                        [  8%]
+tests\dados\test_silver.py .......                                       [ 12%]
+tests\ia\test_agente.py ............                                     [ 20%]
+tests\ia\test_avaliacao.py .....                                         [ 24%]
+tests\integracao\test_fluxo_completo.py ..                               [ 25%]
+tests\iot\test_iot_emulador.py ...........................               [ 42%]
+tests\iot\test_iot_firmware.py ........                                  [ 48%]
+tests\iot\test_iot_gateway.py .................................          [ 69%]
+tests\web\test_web_conta.py ...............                              [ 79%]
+tests\web\test_web_interno.py ..........                                 [ 85%]
+tests\web\test_web_telas.py ...............                              [ 95%]
+tests\web\test_web_unidades.py .......                                   [100%]
+
+============================== warnings summary ===============================
+..\..\AppData\Local\Temp\vigia_venv\Lib\site-packages\fastapi\testclient.py:1
+  ~\AppData\Local\Temp\vigia_venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: .\docs\evidencias\ci_local\relatorio-testes.xml -
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.1-final-0 _______________
+
+Name                                 Stmts   Miss  Cover
+--------------------------------------------------------
+comum\__init__.py                        0      0   100%
+comum\config.py                         44     13    70%
+comum\estacoes.py                       39      0   100%
+comum\http_interno.py                   14      1    93%
+comum\log.py                            25      0   100%
+dados\__init__.py                        0      0   100%
+dados\camadas.py                        68     10    85%
+dados\dashboard\__init__.py              0      0   100%
+dados\dashboard\app.py                 234     40    83%
+dados\dashboard\consultas.py            59      4    93%
+dados\fontes\__init__.py                 0      0   100%
+dados\ingestao\__init__.py               0      0   100%
+dados\ingestao\gateway_mqtt.py         235     43    82%
+dados\medidas.py                        59      6    90%
+dados\pipeline.py                      113     78    31%
+dados\processamento\__init__.py          0      0   100%
+dados\processamento\bronze.py           61     26    57%
+dados\processamento\features.py         34      0   100%
+dados\processamento\gold.py             55      3    95%
+dados\processamento\silver.py           76     20    74%
+dados\simulacao\__init__.py              0      0   100%
+dados\simulacao\hidrologia.py           65     45    31%
+ia\__init__.py                           0      0   100%
+ia\agente.py                            59      1    98%
+ia\avaliacao.py                         55      1    98%
+ia\dataset.py                           39      4    90%
+ia\demonstrar.py                        45     45     0%
+ia\mensagens.py                         32      0   100%
+ia\modelo.py                            29      1    97%
+ia\servico.py                          129     49    62%
+ia\treinar.py                          102     74    27%
+mvp\__init__.py                          0      0   100%
+mvp\iot\__init__.py                      0      0   100%
+mvp\iot\emulador.py                    304     68    78%
+mvp\iot\firmware\capturar_wokwi.py     135     91    33%
+mvp\web\__init__.py                      0      0   100%
+mvp\web\apoio.py                        73      0   100%
+mvp\web\app.py                          72      2    97%
+mvp\web\apresentacao.py                 68     16    76%
+mvp\web\avisos.py                       17      0   100%
+mvp\web\banco.py                       112      0   100%
+mvp\web\grafico.py                      71      0   100%
+mvp\web\metricas.py                     17      1    94%
+mvp\web\modelos.py                      56      0   100%
+mvp\web\mqtt_saida.py                   25     17    32%
+mvp\web\rotas_agente.py                 37      1    97%
+mvp\web\rotas_conta.py                 112      6    95%
+mvp\web\rotas_interno.py                41      1    98%
+mvp\web\rotas_morador.py                52      1    98%
+mvp\web\rotas_publicas.py               47      2    96%
+mvp\web\seed.py                         71     17    76%
+mvp\web\seguranca.py                    86      5    94%
+mvp\web\validacao.py                    71      4    94%
+--------------------------------------------------------
+TOTAL                                 3138    696    78%
+================= 154 passed, 1 warning in 141.45s (0:02:21) ==================
+
+
+[código de saída 0 em 155.2 s]
