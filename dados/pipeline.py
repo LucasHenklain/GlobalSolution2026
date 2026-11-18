@@ -14,6 +14,7 @@ import argparse
 import time
 
 import pandas as pd
+import pyarrow.parquet as pq
 
 from comum.config import RAIZ
 from comum.log import obter_logger
@@ -109,17 +110,24 @@ def gerar_eventos_demo(quantidade: int = 3, horas_antes: int = 8, horas_depois: 
 
 
 def mostrar_status() -> None:
-    """Lista arquivos e linhas por camada: evidência rápida de que o dado percorreu o caminho todo."""
+    """Lista tabelas, arquivos e linhas por camada: evidência rápida de que o dado percorreu o caminho todo."""
     raiz = camadas.raiz_lake()
     print(f"Data lake: {raiz}")
     for camada in camadas.CAMADAS:
         pasta = raiz / camada
-        arquivos = [a for a in pasta.rglob("*") if a.is_file()] if pasta.exists() else []
+        arquivos = [a for a in pasta.rglob("*") if a.is_file() and not a.name.startswith("_")] if pasta.exists() else []
         tamanho = sum(a.stat().st_size for a in arquivos) / 1e6
         print(f"\n[{camada}] {len(arquivos)} arquivo(s), {tamanho:.1f} MB")
-        for parquet in sorted(a for a in arquivos if a.suffix == ".parquet"):
-            linhas = len(pd.read_parquet(parquet, columns=[pd.read_parquet(parquet).columns[0]]))
-            print(f"  {parquet.relative_to(raiz).as_posix():70s} {linhas:>9,d} linhas".replace(",", "."))
+        # Agrupa as partições (estacao=..., origem=..., data=...) sob a tabela a que pertencem.
+        tabelas: dict[str, list] = {}
+        for arquivo in arquivos:
+            partes = arquivo.relative_to(pasta).parts
+            tabelas.setdefault(partes[0] if len(partes) > 1 else arquivo.name, []).append(arquivo)
+        for tabela, itens in sorted(tabelas.items()):
+            parquets = [a for a in itens if a.suffix == ".parquet"]
+            linhas = sum(pq.ParquetFile(a).metadata.num_rows for a in parquets)
+            detalhe = f"{linhas:>10,d} linhas".replace(",", ".") if parquets else " " * 17
+            print(f"  {tabela:28s} {len(itens):>4d} arquivo(s) {detalhe}")
 
 
 def main() -> None:

@@ -17,3 +17,11 @@ ia/modelos/*.joblib
 # trabalho temporário de vídeo/PDF
 **/_work/
 *.part
+
+# entrega: o zip e o vídeo são gerados; não vão para o Git
+entrega/*.zip
+*.mp4
+*.webm
+entrega/video/audio/
+entrega/video/cenas/
+docs/pdf/_work/

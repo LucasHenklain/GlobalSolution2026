@@ -1,0 +1,21 @@
+GLOBAL SOLUTION 2026/2 - CITIZENTECH
+FIAP - Engenharia de Software - 4o ano - Turma 4ESOA
+
+Grupo: Grupo 14
+Projeto: VigIA - alerta comunitario de enchentes
+
+Integrantes:
+RM551178 - Lucas Dalmas Batista e Souza
+RM97881  - Lucas Emanuel de Melo Silva
+RM97592  - Kayque Moraes Dias
+RM99350  - Lucas Moraes Henklain da Silva
+RM99198  - Vinicius Pinheiro
+
+Link do video pitch: [A PREENCHER - link publico do YouTube/Drive, testado em aba anonima]
+
+Conteudo do .zip:
+- README.md ............................ como executar cada area
+- VigIA_Grupo14_Entregaveis.pdf ........ solucao, arquitetura, prints, dashboards e evidencias de cada area
+- Grupo14_integrantes.txt .............. este arquivo
+- ia/ dados/ mvp/ devops/ .............. codigo, uma pasta por area
+- comum/ tests/ docs/ .................. apoio, testes automatizados, diagramas e evidencias

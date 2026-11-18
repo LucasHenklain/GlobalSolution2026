@@ -1,0 +1,137 @@
+{
+  "fps": 30,
+  "largura": 1920,
+  "altura": 1080,
+  "voz": "pt-BR-AntonioNeural",
+  "velocidade": "+9%",
+  "cenas": [
+    {
+      "id": "01_problema",
+      "narracao": "Quem mora perto de córrego só descobre que vai alagar quando a água já está na porta. No Brasil, mais de 8,9 milhões de pessoas vivem em áreas de risco, em 1.942 municípios. De 1991 a 2022, inundações, enxurradas e deslizamentos mataram 3.890 pessoas. O aviso, quando chega, chega tarde.",
+      "titulo": "VigIA — alerta comunitário de enchentes",
+      "titulo_seg": [
+        0.3,
+        4.5
+      ],
+      "fonte": "Fonte: nota técnica da Casa Civil, divulgada pela Agência Brasil (maio/2024)",
+      "visuais": [
+        {
+          "video": "cenas/c01_inicio_seco.mp4"
+        }
+      ]
+    },
+    {
+      "id": "02_solucao",
+      "narracao": "O VigIA é uma estação de baixo custo que mede o nível do córrego e a chuva. Uma inteligência artificial prevê o transbordo com até uma hora de antecedência. E o aviso chega em linguagem simples: no aplicativo, por SMS e pela sirene da própria estação, mesmo com internet ruim.",
+      "visuais": [
+        {
+          "imagem": "img/wokwi_normal.png",
+          "peso": 1.0,
+          "zoom": "circuito"
+        },
+        {
+          "imagem": "img/arquitetura.png",
+          "peso": 1.0,
+          "ajuste": "conter"
+        }
+      ]
+    },
+    {
+      "id": "03_sensor",
+      "narracao": "Esta é a estação: um ESP32 simulado no Wokwi, com sensor ultrassônico de nível e pluviômetro. Quando o nível passa da cota, a regra local acende o LED vermelho e toca a sirene, mesmo sem internet, e guarda as leituras para publicar por MQTT quando a rede volta.",
+      "visuais": [
+        {
+          "video": "cenas/wokwi_alerta.mp4"
+        }
+      ]
+    },
+    {
+      "id": "04_ia",
+      "narracao": "Agora, a inteligência artificial. Reproduzimos o temporal real de 24 de janeiro de 2025, com a chuva medida pelo INMET. Choveu 40 milímetros em meia hora, e a IA estima 95 por cento de chance de transbordo. Só que o córrego ainda está em 38 centímetros: para a regra fixa, tudo normal. O morador recebe o alerta de perigo, com o porquê, o que fazer, e um SMS de até 160 caracteres. Uma hora depois, o córrego transborda. O aviso chegou antes.",
+      "visuais": [
+        {
+          "video": "cenas/c04a_minha_area_ia.mp4",
+          "peso": 2.1
+        },
+        {
+          "video": "cenas/c04b_alerta_detalhe.mp4",
+          "peso": 0.9
+        },
+        {
+          "video": "cenas/c04c_transbordo.mp4",
+          "peso": 0.85
+        }
+      ]
+    },
+    {
+      "id": "05_numeros",
+      "narracao": "No teste, com dados de 2024 e 2025 que o modelo nunca viu, os eventos avisados com 30 minutos ou mais passaram de 24 para 79 por cento. A antecedência mediana foi de 10 para 40 minutos, com um terço a menos de alarmes falsos.",
+      "visuais": [
+        {
+          "video": "cenas/c05_painel_ia.mp4"
+        }
+      ]
+    },
+    {
+      "id": "06_painel",
+      "narracao": "No painel da Defesa Civil, os filtros de período e de estação mudam os indicadores, e a tabela mostra onde agir primeiro. O morador também ajuda: relata um bueiro entupido, e o agente vê a ocorrência e a caixa de SMS.",
+      "visuais": [
+        {
+          "video": "cenas/c06a_painel_filtros.mp4",
+          "peso": 1.3
+        },
+        {
+          "video": "cenas/c06b_ocorrencia.mp4",
+          "peso": 0.6
+        },
+        {
+          "video": "cenas/c06c_agente.mp4",
+          "peso": 0.7
+        }
+      ]
+    },
+    {
+      "id": "07_impacto",
+      "narracao": "Quem ganha são as famílias em área de risco, que ganham tempo para salvar documentos, remédios e a própria vida, e a Defesa Civil, que sabe onde agir. O VigIA atende os ODS 11, 13, 3, 10 e 9. E funciona para quem tem menos: celular simples, SMS, página leve e sirene local. Com transparência: neste protótipo, a chuva é real, do INMET, e o nível dos córregos é simulado.",
+      "visuais": [
+        {
+          "video": "cenas/c07a_celular.mp4",
+          "peso": 1.6,
+          "celular": true
+        },
+        {
+          "video": "cenas/c07b_status_txt.mp4",
+          "peso": 0.45
+        }
+      ],
+      "notas": [
+        {
+          "texto": "Quem ganha\\Nfamílias em área de risco\\NDefesa Civil",
+          "de": 0.6,
+          "ate": 9.3,
+          "estilo": "Esquerda"
+        },
+        {
+          "texto": "ODS 11.5 · cidades resilientes\\NODS 13.1 · ação climática\\NODS 3 · saúde\\NODS 10 · menos desigualdade\\NODS 9 · inovação",
+          "de": 9.6,
+          "ate": 20.3,
+          "estilo": "Direita"
+        }
+      ]
+    },
+    {
+      "id": "08_fechamento",
+      "narracao": "Sensores, dados, IA e aplicativo integrados de ponta a ponta. Uma IA medida contra o antes. E uma solução pensada para quem tem menos conexão. VigIA: saiba antes de a água subir.",
+      "titulo": "VigIA · saiba antes de a água subir · Grupo 14 · 4ESOA · FIAP",
+      "titulo_seg": [
+        -5.0,
+        -0.2
+      ],
+      "visuais": [
+        {
+          "video": "cenas/c08_inicio_temporal.mp4"
+        }
+      ]
+    }
+  ]
+}

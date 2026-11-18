@@ -16,7 +16,7 @@
 | Lucas Moraes Henklain da Silva | RM99350 |
 | Vinicius Pinheiro | RM99198 |
 
-O PDF com a solução, a arquitetura e as evidências de cada área está em [`entrega/VigIA_Grupo14_Entregaveis.pdf`](entrega/VigIA_Grupo14_Entregaveis.pdf).
+O PDF com a solução, a arquitetura e as evidências de cada área está em [`VigIA_Grupo14_Entregaveis.pdf`](VigIA_Grupo14_Entregaveis.pdf); os integrantes e o link do pitch, em [`Grupo14_integrantes.txt`](Grupo14_integrantes.txt).
 
 ---
 
