@@ -240,6 +240,12 @@ o script de captura da simulação e o montador de vídeo foram adaptados de tra
 Roteiro de 5 minutos por pessoa em [`docs/validacao/ROTEIRO_VALIDACAO.md`](docs/validacao/ROTEIRO_VALIDACAO.md).
 Os resultados reais ficam em `docs/validacao/respostas.csv` e na seção correspondente do PDF.
 
+Fechamento da entrega em um comando (grava o link do vídeo, consolida a validação, regera o PDF e monta o ZIP):
+
+```bash
+python -m devops.finalizar --video LINK_DO_VIDEO
+```
+
 ## 8. Problemas comuns
 
 | Sintoma | Solução |

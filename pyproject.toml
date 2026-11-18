@@ -19,6 +19,7 @@ ignore = ["S101"]  # assert e normal em testes
 "devops/ci_local.py" = ["S603", "S607", "E501"]  # executa comandos fixos (ruff, pytest, docker), sem entrada externa
 "devops/preparar.py" = ["S603"]
 "devops/empacotar.py" = ["E501", "S603", "S607"]
+"devops/finalizar.py" = ["E501", "S603", "S607"]
 "entrega/*" = ["S603", "S607", "E501"]  # montagem do video: chama o ffmpeg com argumentos fixos
 "devops/demo.py" = ["S603", "E501"]  # inicia os servicos locais com comandos fixos
 "docs/*" = ["S603", "S607", "E501"]  # ferramentas de captura e geracao do PDF: comandos fixos, textos longos

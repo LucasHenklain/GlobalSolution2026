@@ -118,7 +118,6 @@ Contratos técnicos entre os módulos: [docs/contratos-tecnicos.md](docs/contrat
 
 ## 7. Depois de receber o link do vídeo e as respostas da validação
 
-1. Preencher o link em `README.md` e `Grupo14_integrantes.txt` (trocar o texto `[A PREENCHER ...]`).
-2. Preencher `docs/pdf/conteudo/validacao.md` com o que as pessoas disseram.
-3. `python docs/pdf/gerar_pdf.py` → `git add -A && git commit` → `python -m devops.empacotar`.
-4. Enviar `entrega/GS2026-2_CitizenTech_Grupo14.zip` na plataforma até 19/11 23h55.
+1. Conferir `docs/validacao/respostas.csv` (uma linha por pessoa) e, se houver, `docs/validacao/o_que_mudou.md`.
+2. `python -m devops.finalizar --video LINK` — grava o link, consolida a validação, regera o PDF, faz o commit e monta o ZIP.
+3. `git push` e enviar `entrega/GS2026-2_CitizenTech_Grupo14.zip` na plataforma até 19/11 23h55.

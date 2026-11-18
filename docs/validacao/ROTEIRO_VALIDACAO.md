@@ -49,12 +49,19 @@ o_que_faria_com_40_min, confiaria (sim/depende/nao), canal_preferido, sugestao, 
 - **Frase marcante**: copiem uma frase curta com as palavras da pessoa (com autorização para citar sem o nome).
 - Se alguém pedir uma mudança que dá para fazer rápido (ex.: trocar uma palavra), façam e anotem em "O que mudou".
 
-## Depois das conversas (10 minutos, uma pessoa da equipe)
+## Depois das conversas (5 minutos, uma pessoa da equipe)
 
-1. Contem: quantas pessoas, quantas entenderam a tela sozinhas, canal preferido mais citado.
-2. Preencham a seção **"Validação com pessoas reais"** do PDF (arquivo `docs/pdf/conteudo/validacao.md`):
-   quem ouvimos, o que aprendemos (3 pontos), o que mudou no produto, 1 ou 2 frases marcantes.
-3. Rodem `python docs/pdf/gerar_pdf.py` para regenerar o PDF com a seção preenchida.
+1. Confiram se cada conversa virou uma linha em `respostas.csv`.
+2. Se alguma conversa fez vocês mudarem algo no produto (uma palavra, uma cor, a ordem das informações), escrevam em
+   `docs/validacao/o_que_mudou.md`, um item por linha começando com `- `.
+3. Rodem um comando só, na raiz do projeto:
+
+   ```
+   python -m devops.finalizar --video LINK_DO_VIDEO
+   ```
+
+   Ele conta as respostas, escreve a seção "Validação com pessoas reais" do PDF (só com o que está no CSV),
+   grava o link do vídeo, regera o PDF, faz o commit e monta o ZIP. Sem o link ainda? Rodem sem `--video`.
 4. No vídeo, se couber: 1 frase ("Conversamos com N moradores; X entenderam o alerta sem explicação").
 
 ## O que NÃO fazer
