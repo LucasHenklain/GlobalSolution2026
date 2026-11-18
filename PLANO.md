@@ -78,38 +78,47 @@ Contratos técnicos entre os módulos: [docs/contratos-tecnicos.md](docs/contrat
 ## 5. Checklist da rubrica
 
 ### Área 1 · IA e automação (4)
-- [ ] IA aplicada implementada (1,5): modelo de previsão de transbordo em 60 min + agente de alerta
-- [ ] Regras/agente documentados no PDF (1)
-- [ ] Demonstração com entrada e saída (0,5)
-- [ ] Lógica e ganho com métrica antes/depois (1)
+- [x] IA aplicada implementada (1,5): modelo de previsão de transbordo em 60 min (`ia/treinar.py`) + serviço em tempo real (`ia/servico.py`)
+- [x] Regras/agente documentados no PDF (1): R1–R10 e modelos de mensagem (`ia/agente.py`, `ia/mensagens.py`; PDF 6.2)
+- [x] Demonstração com entrada e saída (0,5): `python -m ia.demonstrar` (PDF 6.3)
+- [x] Lógica e ganho com métrica antes/depois (1): 23,7% → 78,9% avisados com 30+ min; mediana 10 → 40 min; falsos 61 → 41 (PDF 6.4)
 
 ### Área 2 · Big data e visualização (4)
-- [ ] Estrutura em camadas (data lake bronze/silver/gold + quarentena) (1)
-- [ ] Ingestão e processamento da coleta ao dado tratado (1)
-- [ ] Dashboard com 3+ indicadores e filtros para decisão (1,5)
-- [ ] Funções analíticas / medidas estilo DAX (0,5)
+- [x] Estrutura em camadas (landing, bronze, silver, quarentena, gold) (1)
+- [x] Ingestão e processamento da coleta ao dado tratado (INMET real + MQTT) (1)
+- [x] Dashboard com 6 indicadores e 4 filtros para decisão (1,5)
+- [x] Funções analíticas / medidas estilo DAX (`dados/medidas.py`, `dados/powerbi/medidas.dax`) (0,5)
 
 ### Área 3 · MVP, IoT e experiência digital (4)
-- [ ] 4+ telas funcionais (1)
-- [ ] 2+ sensores (Wokwi ESP32: ultrassônico + pluviômetro; emulador) (1)
-- [ ] Fluxo completo do início ao fim (1)
-- [ ] Diagrama de arquitetura geral (1)
+- [x] 12 telas funcionais (1)
+- [x] 2+ sensores: ESP32 no Wokwi (ultrassônico + pluviômetro + bateria), compilado e publicando MQTT; emulador (1)
+- [x] Fluxo completo do início ao fim (`docker compose up` ou `python -m devops.demo`) (1)
+- [x] Diagrama de arquitetura geral (`docs/diagramas/arquitetura.svg`) (1)
 
 ### Área 4 · DevOps, segurança e qualidade (3)
-- [ ] Organização por módulos + Git (0,5)
-- [ ] Evidência de Docker / CI / monitoramento funcionando (1)
-- [ ] 2+ práticas de segurança (0,5)
-- [ ] Plano com 5+ casos de teste e evidência de execução (1)
+- [x] Organização por módulos + Git (0,5)
+- [x] Docker (8 serviços), CI local com teste de fumaça ponta a ponta, monitoramento (1) — CI no GitHub depende do push
+- [x] Segurança: autenticação, autorização, validação, CSRF, cifra do telefone, LGPD (0,5)
+- [x] Plano com 21 casos e evidência de execução (154 testes automatizados) (1)
 
 ### Vídeo pitch (5) e entrega
-- [ ] Vídeo ≤ 2:55 mostrando o protótipo funcionando (MP4 no projeto)
+- [ ] Vídeo ≤ 2:55 mostrando o protótipo funcionando (`entrega/video/VigIA_pitch_Grupo14.mp4`) — conferir no fim
 - [ ] Link público do vídeo no `.txt` e no README — **depende da equipe**
-- [ ] PDF de entregáveis
-- [ ] `.txt` com grupo, RM, nomes e link
-- [ ] README de execução + declaração de uso de IA generativa
+- [x] PDF de entregáveis (`VigIA_Grupo14_Entregaveis.pdf`, gerado por `docs/pdf/gerar_pdf.py`)
+- [x] `.txt` com grupo, RM, nomes e link (`Grupo14_integrantes.txt`; link a preencher)
+- [x] README de execução + declaração de uso de IA generativa
 - [ ] ZIP extraído e validado do zero seguindo só o README
-- [ ] Validação com gente real — **depende da equipe** (roteiro pronto)
+- [ ] Validação com gente real — **depende da equipe** (roteiro em `docs/validacao/`)
 
 ## 6. Andamento
 
 - 16/11: case lido; problema decidido; ambiente verificado; dados INMET 2019–2025 baixados.
+- 17/11: data lake, simulação hidrológica, IA (treino e avaliação), agente, dashboard, app web, IoT (firmware validado no Wokwi), integração ponta a ponta.
+- 18/11: Docker Compose, CI local completo, capturas reais, PDF, README, roteiro de validação, empacotador, vídeo.
+
+## 7. Depois de receber o link do vídeo e as respostas da validação
+
+1. Preencher o link em `README.md` e `Grupo14_integrantes.txt` (trocar o texto `[A PREENCHER ...]`).
+2. Preencher `docs/pdf/conteudo/validacao.md` com o que as pessoas disseram.
+3. `python docs/pdf/gerar_pdf.py` → `git add -A && git commit` → `python -m devops.empacotar`.
+4. Enviar `entrega/GS2026-2_CitizenTech_Grupo14.zip` na plataforma até 19/11 23h55.

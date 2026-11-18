@@ -433,6 +433,7 @@ O firmware compila e roda no Wokwi, conecta no Wi-Fi, sincroniza o relógio, pub
 chegam ao nosso gateway. <b>Regra local:</b> nível ≥ cota de alerta acende o LED vermelho e toca a sirene sem depender de rede.
 <b>Guarda-e-reenvia:</b> sem conexão, guarda até 60 leituras com a hora original e publica quando a rede volta.</p>
 {figura("mvp/iot/firmware/captura-wokwi.png", "Simulação no Wokwi (captura automática por capturar_wokwi.py): circuito à direita; no monitor serial, a estação guardando leituras enquanto o MQTT não conecta (guarda-e-reenvia) — depois elas são publicadas.")}
+{figura("mvp/iot/firmware/captura-wokwi-alerta.png", "Mesmo circuito com o ultrassônico a 150 cm da água (nível 250 cm, acima da cota de alerta): a regra local acende o LED vermelho e liga a sirene, sem depender da rede.")}
 <p>Leitura publicada pela estação simulada no Wokwi e recebida pelo gateway (arquivo da landing):</p>
 {bloco('{"estacao_id":"EST-ARI-01","medido_em":"2026-11-17T16:16:20Z","nivel_cm":97.5,"chuva_mm":0.0,"bateria_pct":86.0,"seq":5,"fw":"1.0.0","origem":"wokwi","recebido_em":"2026-11-17T16:16:47.633Z"}', claro=True)}
 <p>Além do Wokwi, <code>mvp/iot/emulador.py</code> emula as 4 estações com o mesmo payload (tempo real com cenários, ou replay de um
@@ -468,7 +469,8 @@ def _resumo_ci() -> str:
         return '<div class="pendente">Execução local do pipeline ainda não registrada (rode <code>python -m devops.ci_local --com-docker</code>).</div>'
     linhas = [linha.strip("|").split("|") for linha in resumo.splitlines() if linha.startswith("| 0") or linha.startswith("| 1")]
     cabecalho = next((linha for linha in resumo.splitlines() if linha.startswith("Data:")), "")
-    return f"<p>{esc(cabecalho)}</p>" + tabela(["Etapa", "Resultado", "Duração"], [[c.strip() for c in linha] for linha in linhas], numericas=(2,))
+    cabecalho = re.sub(r"`([^`]+)`", r"<code>\1</code>", esc(cabecalho))
+    return f"<p>{cabecalho}</p>" + tabela(["Etapa", "Resultado", "Duração"], [[c.strip() for c in linha] for linha in linhas], numericas=(2,))
 
 
 def _trecho(arquivo: str, padrao: str, antes: int = 0, depois: int = 30) -> str:

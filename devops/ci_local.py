@@ -37,6 +37,8 @@ SEGREDO_CA = ["--secret", f"id=ca_extra,src={CA_EXTRA}"] if CA_EXTRA else []
 SERVICOS = ["mosquitto", "app", "gateway", "pipeline", "ia", "dashboard"]
 ETAPAS_DOCKER = [
     ("05_docker_build", ["docker", "build", "-t", "vigia:latest", *SEGREDO_CA, "."]),
+    # Volume novo a cada execução, como na CI: o teste de fumaça conta alertas NOVOS chegando ao app.
+    ("05b_docker_limpar", ["docker", "compose", "down", "-v", "--remove-orphans"]),
     ("06_docker_up", ["docker", "compose", "up", "-d", "--wait", "--wait-timeout", "900", *SERVICOS]),
     ("07_docker_ps", ["docker", "compose", "ps"]),
     (

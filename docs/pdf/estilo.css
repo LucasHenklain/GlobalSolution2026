@@ -29,6 +29,7 @@ figure img { max-width: 100%; border: 1px solid #c9d1da; border-radius: 1.5mm; }
 figcaption { font-size: 8.4pt; color: #51606f; margin-top: 1mm; text-align: left; }
 .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; align-items: start; }
 .tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; align-items: start; }
+.duas img { max-height: 108mm; width: auto; max-width: 100%; }
 .celular img { max-height: 118mm; width: auto; }
 .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; margin: 0 0 3mm; }
 .kpi { border: 1px solid #c9d1da; border-radius: 2mm; padding: 2.2mm 2.5mm; break-inside: avoid; }

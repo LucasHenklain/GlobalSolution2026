@@ -17,6 +17,7 @@ x-vigia: &vigia
   volumes:
     - vigia_dados:/dados_vigia        # data lake, banco do app e modelo treinado (sobrevivem a reinícios)
   restart: unless-stopped
+  init: true                          # processo init no container: encerra limpo e não deixa processo zumbi
   logging:
     driver: json-file
     options: {max-size: "5m", max-file: "3"}
@@ -24,6 +25,7 @@ x-vigia: &vigia
 services:
   mosquitto:
     image: eclipse-mosquitto:2
+    init: true                        # o healthcheck abre um processo a cada 10 s; o init recolhe os que terminam
     volumes:
       - ./devops/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
     ports:
