@@ -112,7 +112,7 @@ def gerar_eventos_demo(quantidade: int = 3, horas_antes: int = 8, horas_depois: 
 def mostrar_status() -> None:
     """Lista tabelas, arquivos e linhas por camada: evidência rápida de que o dado percorreu o caminho todo."""
     raiz = camadas.raiz_lake()
-    print(f"Data lake: {raiz}")
+    print(f"Data lake: {raiz.relative_to(RAIZ).as_posix() if raiz.is_relative_to(RAIZ) else raiz}")
     for camada in camadas.CAMADAS:
         pasta = raiz / camada
         arquivos = [a for a in pasta.rglob("*") if a.is_file() and not a.name.startswith("_")] if pasta.exists() else []

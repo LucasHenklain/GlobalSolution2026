@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import subprocess  # nosec B404
 import sys
 import time
@@ -57,6 +58,17 @@ ETAPAS_DOCKER = [
 ]  # fmt: skip
 
 
+def limpar_registro(texto: str) -> str:
+    """Tira do registro o que é da máquina e não do projeto: pasta do usuário, IP externo, caminho de certificado."""
+    casa = str(Path.home())
+    texto = re.sub(r"src=\S+\.pem", "src=<cadeia-de-certificados>.pem", texto)
+    # A raiz do projeto vira "." e a pasta do usuário vira "~" (a raiz primeiro, porque fica dentro da pasta do usuário).
+    for trecho, troca in ((str(RAIZ), "."), (casa, "~"), (casa.replace("\\", "/"), "~")):
+        texto = texto.replace(trecho, troca)
+    linhas = [linha for linha in texto.splitlines() if "External URL" not in linha and "Network URL" not in linha]
+    return "\n".join(linhas)
+
+
 def rodar(nome: str, comando: list[str]) -> tuple[bool, float]:
     """Executa uma etapa, grava a saída completa em arquivo e devolve (passou?, segundos)."""
     inicio = time.time()
@@ -66,7 +78,7 @@ def rodar(nome: str, comando: list[str]) -> tuple[bool, float]:
     )  # noqa: S603
     duracao = time.time() - inicio
     texto = f"$ {' '.join(str(c) for c in comando)}\n\n{r.stdout}\n{r.stderr}\n[código de saída {r.returncode} em {duracao:.1f} s]\n"
-    (SAIDA / f"{nome}.txt").write_text(texto, encoding="utf-8")
+    (SAIDA / f"{nome}.txt").write_text(limpar_registro(texto) + "\n", encoding="utf-8")
     print(f"{'PASSOU' if r.returncode == 0 else 'FALHOU'}  {nome}  ({duracao:.1f} s)")
     return r.returncode == 0, duracao
 
