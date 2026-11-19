@@ -616,7 +616,7 @@ Respostas brutas: <code>docs/validacao/respostas.csv</code>.</p>
 <h1>11. Uso de IA generativa e reaproveitamento</h1>
 {tabela(["Ferramenta", "Para quê"], [
     ["Claude (Anthropic), via Claude Code", "apoio na escolha e pesquisa do problema, geração e revisão de código, testes, documentação, deste PDF e da montagem do vídeo, sob direção e revisão da equipe"],
-    ["edge-tts (voz neural do Microsoft Edge)", "narração do vídeo pitch"],
+    ["edge-tts (voz neural do Microsoft Edge)", "narração da versão de rascunho do vídeo pitch; o vídeo entregue é narrado por um integrante da equipe"],
 ])}
 <p>Em tempo de execução <b>não há IA generativa</b>: a previsão é um modelo de machine learning (scikit-learn) e as mensagens dos alertas
 são textos fixos. O guia <code>docs/COMO_EXPLICAR.md</code> é o roteiro de revisão da equipe: explica cada área, os arquivos e as

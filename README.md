@@ -8,7 +8,7 @@
 
 **Repositório:** <https://github.com/LucasHenklain/GlobalSolution2026> · [![ci](https://github.com/LucasHenklain/GlobalSolution2026/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasHenklain/GlobalSolution2026/actions/workflows/ci.yml)
 
-**Vídeo pitch (3 min):** [A PREENCHER — link público do YouTube/Drive]
+**Vídeo pitch (3 min):** https://youtu.be/2_vlZEJXPYY
 
 | Integrante | RM |
 |---|---|
@@ -227,7 +227,7 @@ Os registros ficam em `docs/evidencias/ci_local/`.
 | Ferramenta | Para quê |
 |---|---|
 | Claude (Anthropic), via Claude Code | apoio na escolha e pesquisa do problema, geração e revisão de código, testes, documentação, PDF e montagem do vídeo, sob direção e revisão da equipe |
-| edge-tts (voz neural do Microsoft Edge) | narração do vídeo pitch |
+| edge-tts (voz neural do Microsoft Edge) | narração da versão de rascunho do vídeo pitch; o vídeo entregue é narrado por um integrante da equipe |
 
 Em tempo de execução **não há IA generativa**: a previsão é um modelo de machine learning treinado pela equipe
 (scikit-learn) e as mensagens dos alertas são textos fixos revisáveis. O guia
