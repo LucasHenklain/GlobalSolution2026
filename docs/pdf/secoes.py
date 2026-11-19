@@ -32,7 +32,10 @@ def _powerbi() -> str:
         figuras += figura(medida, "Fórmula DAX de uma das medidas na barra de fórmulas do Power BI.")
     return (
         "<p><b>No Power BI.</b> As medidas de <code>dados/powerbi/medidas.dax</code> foram montadas no Power BI Desktop sobre os Parquet do gold "
-        "(kit gerado por <code>python -m dados.powerbi.exportar_kit</code>); os valores conferem com os calculados em Python.</p>" + figuras
+        "(kit gerado por <code>python -m dados.powerbi.exportar_kit</code>); os valores conferem com os calculados em Python. "
+        "A página usa uma medida que monta o painel em HTML com as cores do app (<code>dados/powerbi/medida_painel_html.dax</code>), "
+        "exibida no visual HTML Content; os filtros de período e de estação são segmentações nativas do Power BI. "
+        "O relatório está em <code>dados/powerbi/VigIA_PowerBI.pbix</code>.</p>" + figuras
     )
 
 
