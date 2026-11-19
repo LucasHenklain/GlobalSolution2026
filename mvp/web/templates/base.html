@@ -20,9 +20,9 @@
         {% if usuario and usuario.papel == "agente" %}
           {{ item("/agente", "Painel do agente") }}{{ item("/alertas", "Alertas") }}{{ item("/estacoes", "Estações") }}{{ item("/perfil", "Perfil") }}
         {% elif usuario %}
-          {{ item("/minha-area", "Minha área") }}{{ item("/alertas", "Alertas") }}{{ item("/ocorrencias", "Ocorrências") }}{{ item("/estacoes", "Estações") }}{{ item("/perfil", "Perfil") }}
+          {{ item("/minha-area", "Minha área") }}{{ item("/alertas", "Alertas") }}{{ item("/ocorrencias", "Ocorrências") }}{{ item("/estacoes", "Estações") }}{{ item("/emergencia", "Emergência") }}{{ item("/perfil", "Perfil") }}
         {% else %}
-          {{ item("/", "Início") }}{{ item("/estacoes", "Estações") }}{{ item("/entrar", "Entrar") }}{{ item("/cadastro", "Criar conta", "menu-destaque") }}
+          {{ item("/", "Início") }}{{ item("/estacoes", "Estações") }}{{ item("/emergencia", "Emergência") }}{{ item("/entrar", "Entrar") }}{{ item("/cadastro", "Criar conta", "menu-destaque") }}
         {% endif %}
         {% if usuario %}<li><form method="post" action="/sair">{% include "_csrf.html" %}<button type="submit">Sair</button></form></li>{% endif %}
       </ul>
@@ -36,7 +36,7 @@
 </main>
 <footer class="rodape">
   <div class="largura">
-    <p><strong>Emergência: ligue 199 (Defesa Civil) ou 193 (Bombeiros).</strong></p>
+    <p><strong>Emergência: ligue 199 (Defesa Civil) ou 193 (Bombeiros).</strong> <a href="/emergencia">Todos os telefones de emergência</a></p>
     <p>Internet fraca? Veja a situação em texto puro: <a href="/status.txt">/status.txt</a></p>
     <p>Protótipo acadêmico (FIAP, Global Solution 2026). As estações e o nível dos córregos são simulados; a chuva do histórico é real (INMET).</p>
   </div>

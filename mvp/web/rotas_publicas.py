@@ -27,6 +27,22 @@ def inicio(request: Request, usuario: UsuarioOpcional, con: Banco, auto: str = "
     )
 
 
+# Números nacionais de emergência (gratuitos) e o 156 da Prefeitura de São Paulo para o que não é urgente.
+TELEFONES_DE_EMERGENCIA = [
+    {"numero": "199", "nome": "Defesa Civil", "quando": "Enchente, alagamento, deslizamento ou casa em risco."},
+    {"numero": "193", "nome": "Bombeiros", "quando": "Alguém ilhado, preso ou em perigo na água."},
+    {"numero": "192", "nome": "SAMU", "quando": "Alguém ferido ou passando mal."},
+    {"numero": "190", "nome": "Polícia Militar", "quando": "Risco à segurança durante a emergência."},
+    {"numero": "156", "nome": "Prefeitura de São Paulo", "quando": "Sem urgência: bueiro entupido, lixo no córrego."},
+]
+
+
+@rotas.get("/emergencia")
+def emergencia(request: Request, usuario: UsuarioOpcional) -> Response:
+    """Telefones de emergência num lugar só — tela pedida numa conversa de validação com pessoas reais."""
+    return renderizar(request, "emergencia.html", telefones=TELEFONES_DE_EMERGENCIA)
+
+
 @rotas.get("/estacoes")
 def lista_estacoes(request: Request, usuario: UsuarioOpcional, con: Banco) -> Response:
     situacoes = banco.listar_situacoes(con)

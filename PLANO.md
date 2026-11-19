@@ -90,7 +90,7 @@ Contratos técnicos entre os módulos: [docs/contratos-tecnicos.md](docs/contrat
 - [x] Funções analíticas / medidas estilo DAX (`dados/medidas.py`, `dados/powerbi/medidas.dax`) (0,5)
 
 ### Área 3 · MVP, IoT e experiência digital (4)
-- [x] 12 telas funcionais (1)
+- [x] 13 telas funcionais (1)
 - [x] 2+ sensores: ESP32 no Wokwi (ultrassônico + pluviômetro + bateria), compilado e publicando MQTT; emulador (1)
 - [x] Fluxo completo do início ao fim (`docker compose up` ou `python -m devops.demo`) (1)
 - [x] Diagrama de arquitetura geral (`docs/diagramas/arquitetura.svg`) (1)

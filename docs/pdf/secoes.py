@@ -418,7 +418,7 @@ def area_mvp() -> str:
 <h1>8. Área 3 — MVP, IoT e experiência digital</h1>
 <h2>8.1 Protótipo: telas funcionais</h2>
 {rubrica("<b>Protótipo (1 pt):</b> 4 ou mais telas funcionais, web ou mobile.")}
-<p>App web em FastAPI + Jinja2 (<code>mvp/web/</code>), HTML leve sem JavaScript, pensado primeiro para celular. Doze telas funcionais e uma saída em texto puro;
+<p>App web em FastAPI + Jinja2 (<code>mvp/web/</code>), HTML leve sem JavaScript, pensado primeiro para celular. Treze telas funcionais e uma saída em texto puro;
 todos os prints abaixo são do protótipo rodando, capturados por <code>docs/ferramentas/capturar_evidencias.py</code>.</p>
 {tabela(["Tela", "Rota", "Quem usa", "O que faz"], [
     ["Início", "<code>/</code>", "todos", "situação de cada estação, sem login"],
@@ -429,6 +429,7 @@ todos os prints abaixo são do protótipo rodando, capturados por <code>docs/fer
     ["Relatar e acompanhar ocorrência", "<code>/ocorrencias/nova</code>, <code>/ocorrencias</code>", "morador", "bueiro entupido, lixo no córrego, alagamento, sirene com defeito"],
     ["Perfil", "<code>/perfil</code>", "morador", "preferências (SMS, letras grandes, alto contraste), exportar e excluir dados"],
     ["Painel do agente", "<code>/agente</code>", "agente", "sirenes, fila de ocorrências, alertas, caixa de SMS"],
+    ["Telefones de emergência", "<code>/emergencia</code>", "todos", "199, 193, 192, 190 e 156 com toque para ligar (tela criada a partir da validação)"],
     ["Texto puro", "<code>/status.txt</code>", "todos", "uma linha por estação, para conexão muito ruim"],
 ])}
 <div class="duas">
@@ -605,12 +606,25 @@ todos automatizados. Resumo:</p>
 </section>"""
 
 
+def _tela_da_validacao(texto: str) -> str:
+    """Print da tela que nasceu da validação — só aparece quando há conversas registradas."""
+    if "PENDENTE" in texto:
+        return ""
+    return (
+        '<div class="duas">'
+        + figura(P + "17_emergencia.png", "Mudança feita a partir da validação: tela Telefones de emergência, no menu e no rodapé do app.")
+        + figura(P + "18_celular_emergencia.png", "A mesma tela no celular: o número é um botão que liga.", "celular")
+        + "</div>"
+    )
+
+
 def validacao() -> str:
     texto = ler("docs/pdf/conteudo/validacao.md")
     return f"""
 <section class="secao">
 <h1>10. Validação com pessoas reais</h1>
 {markdown_simples(texto)}
+{_tela_da_validacao(texto)}
 <p class="pequeno">Roteiro: <code>docs/validacao/ROTEIRO_VALIDACAO.md</code> (5 perguntas, 5 minutos por pessoa).
 Respostas brutas: <code>docs/validacao/respostas.csv</code>.</p>
 <h1>11. Uso de IA generativa e reaproveitamento</h1>

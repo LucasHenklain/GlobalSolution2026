@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Telefones de emergência{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <h1>Telefones de emergência</h1>
+  <p class="suave">Toque no número para ligar. As ligações são gratuitas.</p>
+</div>
+<ul class="telefones">
+  {% for t in telefones %}
+  <li class="cartao">
+    <a class="telefone-numero" href="tel:{{ t.numero }}" aria-label="Ligar para {{ t.nome }}, {{ t.numero }}">{{ t.numero }}</a>
+    <div>
+      <h2>{{ t.nome }}</h2>
+      <p>{{ t.quando }}</p>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+<section class="cartao" aria-labelledby="para-onde-ir">
+  <h2 id="para-onde-ir">Para onde ir se precisar sair de casa</h2>
+  <ul class="lista-marcada lista-passos">
+    <li>Vá para um lugar alto e longe do córrego: casa de parente ou vizinho em rua que não alaga.</li>
+    <li>Leve documentos e remédios. Não volte para buscar objetos.</li>
+    <li>Não atravesse ruas alagadas, a pé ou de carro.</li>
+  </ul>
+  <p class="pequeno suave">Hospital, base dos Bombeiros e ponto de apoio mais próximos de cada área: neste protótipo os endereços
+  ainda não estão cadastrados. Em operação, a Defesa Civil local cadastra esses pontos e eles aparecem aqui.</p>
+</section>
+<p class="pequeno suave">Esta tela nasceu de uma conversa de validação: uma das pessoas ouvidas pediu um lugar só com os telefones de emergência.</p>
+{% endblock %}

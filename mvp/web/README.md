@@ -34,6 +34,7 @@ Sem `--demo`, o seed cria só os dois usuários. As situações de exemplo apare
 | `/estacoes`, `/estacoes/{id}` | todos | lista e detalhe (gráfico, cotas, bateria) |
 | `/perfil` | logado | dados, preferências (SMS, letras grandes, alto contraste), exportar dados, excluir conta |
 | `/agente` | agente | sirenes (MQTT), fila de ocorrências, alertas recentes, caixa de saída de SMS simulada |
+| `/emergencia` | todos | telefones de emergência com toque para ligar (tela pedida na validação com pessoas reais) |
 | `/status.txt` | todos | uma linha por estação em texto puro |
 | `/health`, `/metrics` | todos | saúde (JSON) e contadores no formato Prometheus |
 | `/api/interno/*` | pipeline e agente de alerta | `POST situacao`, `POST alertas`, `GET ocorrencias` com `X-Token-Interno` |

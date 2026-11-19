@@ -310,3 +310,11 @@ body.alto-contraste .botao-perigo { color: #000; }
   .topo nav, .rodape, .acoes, .pular { display: none; }
   body { background: #fff; }
 }
+
+/* Telefones de emergência: número grande e fácil de tocar no celular */
+.telefones { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.telefones li { display: flex; align-items: center; gap: 1rem; }
+.telefones h2 { margin: 0 0 0.15rem; font-size: 1.1rem; }
+.telefones p { margin: 0; }
+.telefone-numero { flex: 0 0 auto; min-width: 5.2rem; text-align: center; font-size: 1.7rem; font-weight: 800; text-decoration: none; color: #fff; background: #b3261e; border-radius: 12px; padding: 0.55rem 0.8rem; }
+.telefone-numero:hover, .telefone-numero:focus-visible { filter: brightness(1.1); }

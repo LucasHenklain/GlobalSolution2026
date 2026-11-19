@@ -48,7 +48,7 @@ risco e alertas ao *gold*, ao app e à sirene; as ocorrências relatadas pelos m
 |---|---|---|
 | [`ia/`](ia) | 1 · IA e automação | modelo de previsão (`treinar.py`), avaliação antes × depois (`avaliacao.py`), agente de alerta por regras (`agente.py`), mensagens (`mensagens.py`), serviço em tempo real (`servico.py`) |
 | [`dados/`](dados) | 2 · Big data e visualização | contrato de dados, gateway MQTT, data lake bronze/silver/gold, medidas estilo DAX (`medidas.py`), dashboard Streamlit |
-| [`mvp/`](mvp) | 3 · MVP, IoT e experiência digital | `web/` app FastAPI (12 telas), `iot/` firmware ESP32 para Wokwi e emulador de estações |
+| [`mvp/`](mvp) | 3 · MVP, IoT e experiência digital | `web/` app FastAPI (13 telas), `iot/` firmware ESP32 para Wokwi e emulador de estações |
 | [`devops/`](devops) | 4 · DevOps, segurança e qualidade | Docker, CI local, monitoramento, teste de fumaça, plano de testes |
 | `comum/` · `tests/` · `docs/` | apoio | configuração e log · testes automatizados · PDF, diagramas, evidências, guias |
 
@@ -194,7 +194,8 @@ Os registros ficam em `docs/evidencias/ci_local/`.
 
 ### Área 3 — MVP, IoT e experiência digital
 - **Telas:** início público, cadastro, login, minha área, alertas, detalhe do alerta, estações, detalhe da estação,
-  relatar ocorrência, minhas ocorrências, perfil (LGPD) e painel do agente.
+  relatar ocorrência, minhas ocorrências, perfil (LGPD), painel do agente e telefones de emergência
+  (esta última criada a partir da validação com pessoas reais).
 - **IoT:** ESP32 no Wokwi com 2 sensores (ultrassônico de nível e pluviômetro de báscula) + bateria, 3 LEDs e sirene;
   regra local que funciona sem internet; guarda-e-reenvia de 60 leituras; emulador Python das 4 estações.
 - **Fluxo completo:** sensor → MQTT → pipeline → IA → alerta no app + SMS + sirene → morador relata ocorrência →

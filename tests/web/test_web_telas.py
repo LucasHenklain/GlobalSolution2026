@@ -181,3 +181,12 @@ def test_broker_fora_do_ar_nao_derruba_o_painel(outro_cliente, app, monkeypatch)
 def test_pagina_inexistente_da_404_amigavel(cliente):
     resposta = cliente.get("/nao-existe")
     assert resposta.status_code == 404 and "Página não encontrada" in resposta.text
+
+
+def test_emergencia_e_publica_e_tem_os_telefones_para_ligar(cliente):
+    resposta = cliente.get("/emergencia")
+    assert resposta.status_code == 200
+    for numero in ("199", "193", "192", "190"):
+        assert f'href="tel:{numero}"' in resposta.text
+    assert "set-cookie" not in resposta.headers  # pública: não cria sessão
+    assert 'href="/emergencia"' in cliente.get("/").text  # está no menu e no rodapé

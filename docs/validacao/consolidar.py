@@ -58,6 +58,11 @@ def _contagem(respostas: list[dict], campo: str) -> list[tuple[str, int]]:
     return Counter(valores).most_common()
 
 
+def _como_escrito(respostas: list[dict], campo: str) -> str:
+    """Valores de um campo descritivo (perfil, lugar, idade) com a grafia original e quantas vezes aparecem."""
+    return _lista(Counter(r[campo] for r in respostas if r.get(campo)).most_common())
+
+
 def _lista(pares: list[tuple[str, int]]) -> str:
     return ", ".join(f"{valor} ({n})" for valor, n in pares) or "não informado"
 
@@ -85,20 +90,23 @@ def montar_secao(respostas: list[dict], mudancas: str = "") -> str:
         "",
         "### Quem ouvimos",
         "",
-        f"- Perfis: {_lista(_contagem(respostas, 'perfil'))}.",
-        f"- Onde moram: {_lista(_contagem(respostas, 'bairro_ou_cidade'))}.",
-        f"- Faixa etária: {_lista(_contagem(respostas, 'faixa_etaria'))}.",
+        f"- Perfis: {_como_escrito(respostas, 'perfil')}.",
+        f"- Onde moram ou moraram: {_como_escrito(respostas, 'bairro_ou_cidade')}.",
+        f"- Faixa etária: {_como_escrito(respostas, 'faixa_etaria')}.",
         "",
         "### O que as respostas mostram",
         "",
         f"- **Entenderam a tela de alerta sem explicação:** {entendeu.get('sim', 0)} de {n} "
         f"(parcialmente: {entendeu.get('parcial', 0)}; não: {entendeu.get('nao', 0) + entendeu.get('não', 0)}).",
     ]
-    if minutos:
+    if len(minutos) >= 3:
         partes.append(
             f"- **Antecedência com que ficam sabendo hoje** ({len(minutos)} resposta(s) com número): mediana de "
             f"{statistics.median(minutos):.0f} min (de {min(minutos):.0f} a {max(minutos):.0f} min)."
         )
+    elif minutos:  # com uma ou duas respostas, mediana não diz nada: mostramos os valores
+        valores = " e ".join(f"{m:.0f} min" for m in sorted(minutos))
+        partes.append(f"- **Antecedência com que ficam sabendo hoje** ({len(minutos)} resposta(s) com número): {valores}.")
     partes += [
         f"- **Confiariam no aviso:** {_lista(_contagem(respostas, 'confiaria'))}.",
         f"- **Canal preferido:** {_lista(_contagem(respostas, 'canal_preferido'))}.",
