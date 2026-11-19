@@ -17,6 +17,25 @@ P = "docs/evidencias/prints/"
 CI = "docs/evidencias/ci_local/"
 
 
+def _powerbi() -> str:
+    """Prints do Power BI, se a equipe os tiver feito (kit em dados/powerbi). Sem os prints, o PDF diz o que existe."""
+    from docs.pdf.gerar_pdf import RAIZ
+
+    painel, medida = P + "40_powerbi_painel.png", P + "41_powerbi_medida.png"
+    if not (RAIZ / painel).exists():
+        return (
+            '<p class="pequeno">O painel oficial é o Streamlit, que roda com um comando e lê o mesmo gold. O arquivo <code>.dax</code> e o kit '
+            "<code>python -m dados.powerbi.exportar_kit</code> permitem montar o mesmo painel no Power BI.</p>"
+        )
+    figuras = figura(painel, "As mesmas medidas no Power BI, sobre os Parquet do gold, com filtros de estação e de data (temporal de 24/01/2025).")
+    if (RAIZ / medida).exists():
+        figuras += figura(medida, "Fórmula DAX de uma das medidas na barra de fórmulas do Power BI.")
+    return (
+        "<p><b>No Power BI.</b> As medidas de <code>dados/powerbi/medidas.dax</code> foram montadas no Power BI Desktop sobre os Parquet do gold "
+        "(kit gerado por <code>python -m dados.powerbi.exportar_kit</code>); os valores conferem com os calculados em Python.</p>" + figuras
+    )
+
+
 def _link_do_video() -> str:
     m = re.search(r"\*\*Vídeo pitch \(3 min\):\*\*\s*(.+)", ler("README.md"))
     return m.group(1).strip() if m else "[A PREENCHER]"
@@ -389,7 +408,7 @@ um número. A fórmula DAX equivalente está na docstring e reunida em <code>dad
     ["Ocorrências Abertas", "<code>CALCULATE(COUNTROWS(fato_ocorrencia), fato_ocorrencia[status] &lt;&gt; &quot;resolvida&quot;)</code>", "prioridade"],
     ["Índice de Prioridade", "<code>60 * [Prob. Máxima IA] + 0.30 * MIN([Nível Máximo %], 100) + 2 * MIN([Ocorrências Abertas], 5)</code>", "tabela Onde agir primeiro"],
 ])}
-<p class="pequeno">O painel oficial é o Streamlit, que roda com um comando e lê o mesmo gold. O arquivo <code>.dax</code> permite montar o mesmo painel no Power BI.</p>
+{_powerbi()}
 </section>"""
 
 

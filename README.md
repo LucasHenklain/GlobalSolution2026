@@ -189,7 +189,8 @@ Os registros ficam em `docs/evidencias/ci_local/`.
 - **Dashboard:** 6 indicadores com filtros, tabela "onde agir primeiro", série de nível × cotas, alertas por período,
   horário dos transbordos, antes × depois da IA e monitoramento do pipeline.
 - **Funções analíticas:** `dados/medidas.py` (cada medida traz a fórmula DAX equivalente; versão para Power BI em
-  `dados/powerbi/medidas.dax`).
+  `dados/powerbi/medidas.dax`). Para abrir no Power BI sem rodar o projeto: `python -m dados.powerbi.exportar_kit`
+  gera os Parquet do gold e o passo a passo ([`dados/powerbi/LEIA-ME_PowerBI.md`](dados/powerbi/LEIA-ME_PowerBI.md)).
 
 ### Área 3 — MVP, IoT e experiência digital
 - **Telas:** início público, cadastro, login, minha área, alertas, detalhe do alerta, estações, detalhe da estação,
