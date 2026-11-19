@@ -3,4 +3,4 @@ $ python -m ruff check .
 All checks passed!
 
 
-[código de saída 0 em 4.8 s]
+[código de saída 0 em 1.4 s]

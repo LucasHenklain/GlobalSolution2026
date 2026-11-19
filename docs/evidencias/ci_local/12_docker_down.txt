@@ -1,10 +1,10 @@
 $ docker compose down
 
 
- Container gs2026_citizentech-gateway-1  Stopping
- Container gs2026_citizentech-pipeline-1  Stopping
  Container gs2026_citizentech-ia-1  Stopping
  Container gs2026_citizentech-dashboard-1  Stopping
+ Container gs2026_citizentech-gateway-1  Stopping
+ Container gs2026_citizentech-pipeline-1  Stopping
  Container gs2026_citizentech-pipeline-1  Stopped
  Container gs2026_citizentech-pipeline-1  Removing
  Container gs2026_citizentech-pipeline-1  Removed
@@ -32,4 +32,4 @@ $ docker compose down
  Network gs2026_citizentech_default  Removing
  Network gs2026_citizentech_default  Removed
 
-[código de saída 0 em 13.6 s]
+[código de saída 0 em 7.6 s]

@@ -6,7 +6,7 @@ rootdir: .
 configfile: pyproject.toml
 testpaths: tests
 plugins: anyio-4.16.0, platformdirs-4.14.7, cov-7.1.0
-collected 158 items
+collected 159 items
 
 tests\dados\test_dashboard.py ..                                         [  1%]
 tests\dados\test_features.py ......                                      [  5%]
@@ -18,10 +18,10 @@ tests\ia\test_avaliacao.py .....                                         [ 25%]
 tests\integracao\test_fluxo_completo.py ..                               [ 27%]
 tests\iot\test_iot_emulador.py ...........................               [ 44%]
 tests\iot\test_iot_firmware.py ........                                  [ 49%]
-tests\iot\test_iot_gateway.py .................................          [ 70%]
+tests\iot\test_iot_gateway.py .................................          [ 69%]
 tests\web\test_web_conta.py ...............                              [ 79%]
-tests\web\test_web_interno.py ..........                                 [ 86%]
-tests\web\test_web_telas.py ...............                              [ 95%]
+tests\web\test_web_interno.py ..........                                 [ 85%]
+tests\web\test_web_telas.py ................                             [ 95%]
 tests\web\test_web_unidades.py .......                                   [100%]
 
 ============================== warnings summary ===============================
@@ -51,6 +51,8 @@ dados\ingestao\__init__.py               0      0   100%
 dados\ingestao\gateway_mqtt.py         235     43    82%
 dados\medidas.py                        59      6    90%
 dados\pipeline.py                      113     78    31%
+dados\powerbi\__init__.py                0      0   100%
+dados\powerbi\exportar_kit.py           68     68     0%
 dados\processamento\__init__.py          0      0   100%
 dados\processamento\bronze.py           61     26    57%
 dados\processamento\features.py         34      0   100%
@@ -85,13 +87,13 @@ mvp\web\rotas_agente.py                 37      1    97%
 mvp\web\rotas_conta.py                 112      6    95%
 mvp\web\rotas_interno.py                41      1    98%
 mvp\web\rotas_morador.py                52      1    98%
-mvp\web\rotas_publicas.py               47      2    96%
+mvp\web\rotas_publicas.py               51      2    96%
 mvp\web\seed.py                         71     17    76%
 mvp\web\seguranca.py                    86      5    94%
 mvp\web\validacao.py                    71      4    94%
 --------------------------------------------------------
-TOTAL                                 3138    696    78%
-================= 158 passed, 1 warning in 391.79s (0:06:31) ==================
+TOTAL                                 3210    764    76%
+================== 159 passed, 1 warning in 65.76s (0:01:05) ==================
 
 
-[código de saída 0 em 505.1 s]
+[código de saída 0 em 81.2 s]

@@ -7,37 +7,37 @@ $ docker compose up -d --wait --wait-timeout 900 mosquitto app gateway pipeline 
  Volume "gs2026_citizentech_vigia_dados"  Created
  Container gs2026_citizentech-mosquitto-1  Creating
  Container gs2026_citizentech-preparo-1  Creating
- Container gs2026_citizentech-mosquitto-1  Created
  Container gs2026_citizentech-preparo-1  Created
  Container gs2026_citizentech-dashboard-1  Creating
- Container gs2026_citizentech-app-1  Creating
+ Container gs2026_citizentech-mosquitto-1  Created
  Container gs2026_citizentech-gateway-1  Creating
- Container gs2026_citizentech-gateway-1  Created
- Container gs2026_citizentech-app-1  Created
- Container gs2026_citizentech-pipeline-1  Creating
- Container gs2026_citizentech-ia-1  Creating
+ Container gs2026_citizentech-app-1  Creating
  Container gs2026_citizentech-dashboard-1  Created
- Container gs2026_citizentech-ia-1  Created
+ Container gs2026_citizentech-app-1  Created
+ Container gs2026_citizentech-ia-1  Creating
+ Container gs2026_citizentech-pipeline-1  Creating
+ Container gs2026_citizentech-gateway-1  Created
  Container gs2026_citizentech-pipeline-1  Created
+ Container gs2026_citizentech-ia-1  Created
  Container gs2026_citizentech-preparo-1  Starting
  Container gs2026_citizentech-mosquitto-1  Starting
- Container gs2026_citizentech-mosquitto-1  Started
  Container gs2026_citizentech-preparo-1  Started
  Container gs2026_citizentech-preparo-1  Waiting
+ Container gs2026_citizentech-mosquitto-1  Started
  Container gs2026_citizentech-preparo-1  Waiting
  Container gs2026_citizentech-mosquitto-1  Waiting
- Container gs2026_citizentech-preparo-1  Waiting
  Container gs2026_citizentech-mosquitto-1  Waiting
+ Container gs2026_citizentech-preparo-1  Waiting
  Container gs2026_citizentech-mosquitto-1  Healthy
  Container gs2026_citizentech-mosquitto-1  Healthy
  Container gs2026_citizentech-preparo-1  Exited
+ Container gs2026_citizentech-app-1  Starting
  Container gs2026_citizentech-preparo-1  Exited
+ Container gs2026_citizentech-gateway-1  Starting
  Container gs2026_citizentech-preparo-1  Exited
  Container gs2026_citizentech-dashboard-1  Starting
- Container gs2026_citizentech-app-1  Starting
- Container gs2026_citizentech-gateway-1  Starting
- Container gs2026_citizentech-gateway-1  Started
  Container gs2026_citizentech-dashboard-1  Started
+ Container gs2026_citizentech-gateway-1  Started
  Container gs2026_citizentech-app-1  Started
  Container gs2026_citizentech-app-1  Waiting
  Container gs2026_citizentech-app-1  Waiting
@@ -45,21 +45,21 @@ $ docker compose up -d --wait --wait-timeout 900 mosquitto app gateway pipeline 
  Container gs2026_citizentech-ia-1  Starting
  Container gs2026_citizentech-app-1  Healthy
  Container gs2026_citizentech-pipeline-1  Starting
- Container gs2026_citizentech-ia-1  Started
  Container gs2026_citizentech-pipeline-1  Started
- Container gs2026_citizentech-pipeline-1  Waiting
- Container gs2026_citizentech-ia-1  Waiting
- Container gs2026_citizentech-dashboard-1  Waiting
+ Container gs2026_citizentech-ia-1  Started
  Container gs2026_citizentech-mosquitto-1  Waiting
  Container gs2026_citizentech-preparo-1  Waiting
  Container gs2026_citizentech-app-1  Waiting
  Container gs2026_citizentech-gateway-1  Waiting
+ Container gs2026_citizentech-pipeline-1  Waiting
+ Container gs2026_citizentech-ia-1  Waiting
+ Container gs2026_citizentech-dashboard-1  Waiting
+ Container gs2026_citizentech-mosquitto-1  Healthy
  Container gs2026_citizentech-preparo-1  Exited
  Container gs2026_citizentech-gateway-1  Healthy
- Container gs2026_citizentech-pipeline-1  Healthy
  Container gs2026_citizentech-ia-1  Healthy
- Container gs2026_citizentech-dashboard-1  Healthy
- Container gs2026_citizentech-mosquitto-1  Healthy
  Container gs2026_citizentech-app-1  Healthy
+ Container gs2026_citizentech-pipeline-1  Healthy
+ Container gs2026_citizentech-dashboard-1  Healthy
 
-[código de saída 0 em 808.1 s]
+[código de saída 0 em 65.5 s]

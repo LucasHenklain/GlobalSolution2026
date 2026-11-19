@@ -1,12 +1,12 @@
 $ docker compose ps
 
-NAME                             IMAGE                 COMMAND                  SERVICE     CREATED          STATUS                    PORTS
-gs2026_citizentech-app-1         vigia:latest          "python -m uvicorn m…"   app         13 minutes ago   Up 17 seconds (healthy)   8501/tcp, 0.0.0.0:8010->8000/tcp
-gs2026_citizentech-dashboard-1   vigia:latest          "python -m streamlit…"   dashboard   13 minutes ago   Up 17 seconds (healthy)   8000/tcp, 0.0.0.0:8511->8501/tcp
-gs2026_citizentech-gateway-1     vigia:latest          "python -m dados.ing…"   gateway     13 minutes ago   Up 17 seconds             8000/tcp, 8501/tcp
-gs2026_citizentech-ia-1          vigia:latest          "python -m ia.servico"   ia          13 minutes ago   Up 4 seconds              8000/tcp, 8501/tcp
-gs2026_citizentech-mosquitto-1   eclipse-mosquitto:2   "/docker-entrypoint.…"   mosquitto   13 minutes ago   Up 13 minutes (healthy)   0.0.0.0:1885->1883/tcp
-gs2026_citizentech-pipeline-1    vigia:latest          "python -m dados.pip…"   pipeline    13 minutes ago   Up 4 seconds              8000/tcp, 8501/tcp
+NAME                             IMAGE                 COMMAND                  SERVICE     CREATED              STATUS                        PORTS
+gs2026_citizentech-app-1         vigia:latest          "python -m uvicorn m…"   app         About a minute ago   Up 13 seconds (healthy)       8501/tcp, 0.0.0.0:8010->8000/tcp
+gs2026_citizentech-dashboard-1   vigia:latest          "python -m streamlit…"   dashboard   About a minute ago   Up 13 seconds (healthy)       8000/tcp, 0.0.0.0:8511->8501/tcp
+gs2026_citizentech-gateway-1     vigia:latest          "python -m dados.ing…"   gateway     About a minute ago   Up 13 seconds                 8000/tcp, 8501/tcp
+gs2026_citizentech-ia-1          vigia:latest          "python -m ia.servico"   ia          About a minute ago   Up 2 seconds                  8000/tcp, 8501/tcp
+gs2026_citizentech-mosquitto-1   eclipse-mosquitto:2   "/docker-entrypoint.…"   mosquitto   About a minute ago   Up About a minute (healthy)   0.0.0.0:1885->1883/tcp
+gs2026_citizentech-pipeline-1    vigia:latest          "python -m dados.pip…"   pipeline    About a minute ago   Up 2 seconds                  8000/tcp, 8501/tcp
 
 
-[código de saída 0 em 6.2 s]
+[código de saída 0 em 4.2 s]

@@ -4,77 +4,71 @@ $ docker build -t vigia:latest --secret id=ca_extra,src=<cadeia-de-certificados>
 #0 building with "desktop-linux" instance using docker driver
 
 #1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.58kB 0.0s done
 #1 DONE 0.1s
 
-#1 [internal] load build definition from Dockerfile
-#1 transferring dockerfile:
-#1 transferring dockerfile: 1.58kB 2.6s done
-#1 DONE 3.4s
-
 #2 [internal] load metadata for docker.io/library/python:3.13-slim
-#2 DONE 0.9s
+#2 DONE 0.1s
 
 #3 [internal] load .dockerignore
-#3 transferring context: 33B 0.1s
-#3 transferring context: 187B 0.1s done
-#3 DONE 0.3s
+#3 transferring context: 187B 0.0s done
+#3 DONE 0.0s
 
 #4 [internal] load build context
 #4 DONE 0.0s
 
 #5 [stage-0  1/11] FROM docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
 #5 resolve docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
-#5 resolve docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90 2.5s done
-#5 DONE 2.5s
+#5 resolve docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90 1.3s done
+#5 DONE 1.3s
 
 #4 [internal] load build context
-#4 transferring context: 28.23kB 0.5s done
-#4 DONE 1.1s
+#4 transferring context: 49.11kB 0.1s done
+#4 DONE 0.1s
 
-#6 [stage-0  3/11] COPY requirements.txt .
+#6 [stage-0  4/11] RUN --mount=type=secret,id=ca_extra,required=false     if [ -s /run/secrets/ca_extra ]; then         cat /etc/ssl/certs/ca-certificates.crt /run/secrets/ca_extra > /tmp/ca.pem && export PIP_CERT=/tmp/ca.pem;     fi &&     pip install -r requirements.txt && rm -f /tmp/ca.pem
 #6 CACHED
 
-#7 [stage-0  4/11] RUN --mount=type=secret,id=ca_extra,required=false     if [ -s /run/secrets/ca_extra ]; then         cat /etc/ssl/certs/ca-certificates.crt /run/secrets/ca_extra > /tmp/ca.pem && export PIP_CERT=/tmp/ca.pem;     fi &&     pip install -r requirements.txt && rm -f /tmp/ca.pem
+#7 [stage-0  2/11] WORKDIR /srv/vigia
 #7 CACHED
 
-#8 [stage-0  2/11] WORKDIR /srv/vigia
+#8 [stage-0  3/11] COPY requirements.txt .
 #8 CACHED
 
 #9 [stage-0  5/11] COPY comum ./comum
 #9 CACHED
 
 #10 [stage-0  6/11] COPY dados ./dados
-#10 DONE 11.2s
+#10 DONE 0.3s
 
 #11 [stage-0  7/11] COPY ia ./ia
-#11 DONE 0.3s
+#11 DONE 0.1s
 
 #12 [stage-0  8/11] COPY mvp ./mvp
-#12 DONE 0.3s
+#12 DONE 0.2s
 
 #13 [stage-0  9/11] COPY devops ./devops
 #13 DONE 0.2s
 
 #14 [stage-0 10/11] COPY pyproject.toml ./
-#14 DONE 0.2s
+#14 DONE 0.1s
 
 #15 [stage-0 11/11] RUN useradd --create-home --uid 10001 vigia     && mkdir -p /dados_vigia/lake /dados_vigia/var /dados_vigia/modelos     && chown -R vigia:vigia /dados_vigia /srv/vigia
-#15 DONE 14.7s
+#15 DONE 1.9s
 
 #16 exporting to image
 #16 exporting layers
-#16 exporting layers 10.1s done
-#16 exporting manifest sha256:28bc982e2cb92464fb5b47b2f761953345f803da873be683ddd3f6da08b524d1 0.1s done
-#16 exporting config sha256:f8255c6488b538a5214d7fee123839c11cc2ef885a9c0628f1e3b5ffec9c12ad 0.1s done
-#16 exporting attestation manifest sha256:7b8fef9ae193e45a20890dc93074904fc89016000920de93c2f88eee563065c1
-#16 exporting attestation manifest sha256:7b8fef9ae193e45a20890dc93074904fc89016000920de93c2f88eee563065c1 0.2s done
-#16 exporting manifest list sha256:b69e407b98b474ab16da53c9d924df0bbe8f6092e4412cedbfeb6b355c60cbdc
-#16 exporting manifest list sha256:b69e407b98b474ab16da53c9d924df0bbe8f6092e4412cedbfeb6b355c60cbdc 0.2s done
-#16 naming to docker.io/library/vigia:latest 0.1s done
+#16 exporting layers 1.5s done
+#16 exporting manifest sha256:637a818bbc2120d89b66ca9dd9ce000cdad91a56f39abf06ddf1b42ab19c5d6b 0.0s done
+#16 exporting config sha256:fdd85d37e67ffc76d45fb1e8ea3e0156f7edb6c76c297e7a4da55752d9af3fe8 0.0s done
+#16 exporting attestation manifest sha256:b387778b66bf3a4b11ddbf3c923fb8edd7a14cf73654b34bacfc7edd31b7bc00 0.0s done
+#16 exporting manifest list sha256:ea0c44808e5706f80cb3014df76e3615daeed9ccecd148131f1679fed1e61053
+#16 exporting manifest list sha256:ea0c44808e5706f80cb3014df76e3615daeed9ccecd148131f1679fed1e61053 0.0s done
+#16 naming to docker.io/library/vigia:latest done
 #16 unpacking to docker.io/library/vigia:latest
-#16 unpacking to docker.io/library/vigia:latest 4.8s done
-#16 DONE 15.8s
+#16 unpacking to docker.io/library/vigia:latest 0.4s done
+#16 DONE 2.1s
 
-View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/lwtvwgq6a30cdiwf35p33fcjj
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/17s5pg0u4qd35zbwffl7ltl8t
 
-[código de saída 0 em 89.6 s]
+[código de saída 0 em 12.3 s]

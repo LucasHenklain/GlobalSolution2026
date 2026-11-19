@@ -94,6 +94,7 @@ def markdown_simples(texto: str) -> str:
     for linha in texto.splitlines():
         linha = esc(linha.rstrip())
         linha = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", linha)
+        linha = re.sub(r"`([^`]+)`", r"<code>\1</code>", linha)
         if linha.startswith("- "):
             saida.append(("" if lista else "<ul>") + f"<li>{linha[2:]}</li>")
             lista = True

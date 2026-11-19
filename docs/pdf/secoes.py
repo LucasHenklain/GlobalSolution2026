@@ -554,7 +554,7 @@ build da imagem → pilha no ar e teste de fumaça de ponta a ponta → publica�
 {figura(P + "30_github_actions_run.png", "GitHub Actions, execução #1 do workflow ci: um push disparou lint, segurança e testes → build da imagem e teste da pilha → publicação da imagem, tudo com sucesso.")}
 <h3>Execução local do pipeline</h3>
 {_resumo_ci()}
-<p class="pequeno">As durações variam de uma execução para outra: a máquina de teste rodava outros trabalhos ao mesmo tempo. No GitHub Actions o pipeline inteiro leva cerca de 6 minutos.</p>
+<p class="pequeno">No GitHub Actions o pipeline inteiro leva cerca de 6 minutos.</p>
 <p><b>Teste de fumaça de ponta a ponta na pilha Docker</b> (o emulador publica o temporal por MQTT; o script confere a saúde dos serviços e
 espera o alerta da IA chegar ao app):</p>
 {bloco(_trecho(CI + "09_fumaca_ponta_a_ponta.txt", "[", 0, 10) or "(não registrado)")}

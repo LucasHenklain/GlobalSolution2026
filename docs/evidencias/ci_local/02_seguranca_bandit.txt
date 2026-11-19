@@ -19,4 +19,4 @@ $ python -m bandit -q -c pyproject.toml -r comum dados ia mvp devops
 [manager]	WARNING	Test in comment: arquivo is not a test name or id, ignoring
 [tester]	WARNING	nosec encountered (B603), but no failed test on file devops\preparar.py:50
 
-[código de saída 0 em 15.5 s]
+[código de saída 0 em 2.5 s]
