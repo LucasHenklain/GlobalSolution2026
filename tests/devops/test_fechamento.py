@@ -67,6 +67,6 @@ def test_consolidacao_so_conta_o_que_esta_no_csv(tmp_path):
     secao = consolidar.montar_secao(respostas, mudancas="- Trocamos uma palavra na tela.")
     assert "Conversamos com **3 pessoa(s)**" in secao and "PENDENTE" not in secao
     assert "sem explicação:** 2 de 3 (parcialmente: 1; não: 0)" in secao
-    assert "(2 resposta(s) com número): 5 min e 15 min." in secao  # "não sei" fica de fora; com 2 números não há mediana
+    assert "(2 resposta(s) com número): 5 min e 15 min." in secao  # "não sei" fica de fora
     assert "sms (2), whatsapp (1)" in secao
     assert re.search(r"“frase de teste um”", secao) and "- Trocamos uma palavra na tela." in secao
