@@ -191,6 +191,8 @@ Os registros ficam em `docs/evidencias/ci_local/`.
 - **Funções analíticas:** `dados/medidas.py` (cada medida traz a fórmula DAX equivalente; versão para Power BI em
   `dados/powerbi/medidas.dax`). Para abrir no Power BI sem rodar o projeto: `python -m dados.powerbi.exportar_kit`
   gera os Parquet do gold e o passo a passo ([`dados/powerbi/LEIA-ME_PowerBI.md`](dados/powerbi/LEIA-ME_PowerBI.md)).
+  O relatório pronto está em `dados/powerbi/VigIA_PowerBI.pbix` (medidas sobre o gold, filtros de período e estação;
+  o painel é montado pela medida `dados/powerbi/medida_painel_html.dax`), com prints no PDF.
 
 ### Área 3 — MVP, IoT e experiência digital
 - **Telas:** início público, cadastro, login, minha área, alertas, detalhe do alerta, estações, detalhe da estação,

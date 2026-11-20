@@ -32,6 +32,7 @@ Conversamos com **3 pessoa(s)** seguindo o roteiro de 5 perguntas (docs/validaca
 
 ### Frases de quem ouvimos (transcritas, sem identificação)
 
+- “Já perdi documentos por conta da chuva”
 - “Confio em meios mais tradicionais, como televisão ou mesmo em vizinhos.”
 - “Hoje não tem uma sinalização efetiva e acabamos sabendo somente quando já aconteceu.”
 
